@@ -1,7 +1,9 @@
 import React from "react";
 import Header from "../../Components/Header/Header";
 import LowerHeader from "../../Components/Header/LowerHeader";
-import { Outlet} from "react-router-dom";
+import Footer from "../../Components/Footer/Footer";  // Changed to uppercase
+import { Outlet } from "react-router-dom";
+
 const Layout = ({ children }) => {
   return (
     <div>
@@ -10,8 +12,11 @@ const Layout = ({ children }) => {
       <br />
       <br />
       <LowerHeader />
-      <main>{children}</main>
-      <Outlet />
+      <main>
+        {children}
+        <Outlet /> 
+      </main>
+      <Footer />  
     </div>
   );
 };
