@@ -46,5 +46,5 @@ app.post("/payment/create", async (req, res) => {
 // Export the Express app as a Firebase Cloud Function
 app.listen(4000, (err) => {
   if (err) console.log(err);
-  console.log(`successfully listened on port &{PORT}:http://localhost:&{PORT}`);
+  console.log(`successfully listened on port 4000`);
 });
