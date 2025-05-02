@@ -1,4 +1,4 @@
-const ForgotPassService = require("../../services/AUTH/ForgotPass.service.js");
+const ForgotPassService = require("../../Services/AUTH/ForgotPass.service");
 
 const ForgotPass = async (req, res) => {
   try {
