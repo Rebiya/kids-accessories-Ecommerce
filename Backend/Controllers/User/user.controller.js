@@ -27,20 +27,20 @@ const getUserByUuid = async (req, res) => {
 // Create user (password hashing added)
 const createUser = async (req, res) => {
   try {
-    const { user_email, user_pass, ...userData } = req.body;
+    const { email, password, ...userData } = req.body;
 
-    if (!user_pass) {
+    if (!password) {
       return res.status(400).json({ message: "Password is required" });
     }
 
     // Check for duplicate email
-    const existingUser = await userService.getUserByEmail(user_email);
+    const existingUser = await userService.getUserByEmail(email);
     if (existingUser) {
       return res.status(409).json({ message: "User already exists" });
     }
 
-    const hashedPassword = await bcrypt.hash(user_pass, 10);
-    const newUser = { ...userData, user_email, user_pass: hashedPassword };
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = { ...userData, email, password: hashedPassword };
 
     const result = await userService.createUser(newUser);
     return res.status(201).json({

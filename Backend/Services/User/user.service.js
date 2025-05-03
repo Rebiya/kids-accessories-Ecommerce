@@ -1,54 +1,54 @@
 const db = require("../../Config/db.config");
 
-// Get all users
+// Get all Users
 async function getAllUsers() {
-  const query = `SELECT * FROM users INNER JOIN roles ON users.role_id = roles.role_id`;
+  const query = `SELECT * FROM Users INNER JOIN Role ON Users.role_id = Role.ID`;
   return await db.query(query);
 }
 
-// Create user
-async function createUser(user) {
+// Create User
+async function createUser(User) {
   const query = `
     INSERT INTO Users 
     (first_name, last_name, email, phone_number, password, role_id) 
     VALUES (?, ?, ?, ?, ?, ?)`;
 
   const values = [
-    user.first_name,
-    user.last_name,
-    user.email,
-    user.phone_number || null,
-    user.password,
-    user.role_id || 1,
+    User.first_name,
+    User.last_name,
+    User.email,
+    User.phone_number || null,
+    User.password,
+    User.role_id || 1,
   ];
 
   return await db.query(query, values);
 }
 
-// Get user by UUID
-async function getUserByUuid(uuid) {
-  const query = `SELECT * FROM Users WHERE uuid = ?`;
-  const rows = await db.query(query, [uuid]);
+// Get User by ID
+async function getUserByID(ID) {
+  const query = `SELECT * FROM Users WHERE ID = ?`;
+  const rows = await db.query(query, [ID]);
   return rows.length ? rows[0] : null;
 }
 
-// Update user by UUID
-async function updateUserByUuid(uuid, userData) {
-  if (!uuid) {
-    throw new Error("UUID is required for updating a user.");
+// Update User by ID
+async function updateUserByID(ID, UserData) {
+  if (!ID) {
+    throw new Error("ID is required for updating a User.");
   }
 
-  const existingUser = await getUserByUuid(uuid);
+  const existingUser = await getUserByID(ID);
   if (!existingUser) {
     throw new Error("User not found.");
   }
 
   const updatedData = {
-    first_name: userData.first_name ?? existingUser.first_name,
-    last_name: userData.last_name ?? existingUser.last_name,
-    email: userData.email ?? existingUser.email,
-    phone_number: userData.phone_number ?? existingUser.phone_number,
-    role_id: userData.role_id ?? existingUser.role_id,
+    first_name: UserData.first_name ?? existingUser.first_name,
+    last_name: UserData.last_name ?? existingUser.last_name,
+    email: UserData.email ?? existingUser.email,
+    phone_number: UserData.phone_number ?? existingUser.phone_number,
+    role_id: UserData.role_id ?? existingUser.role_id,
   };
 
   const query = `
@@ -58,7 +58,7 @@ async function updateUserByUuid(uuid, userData) {
         email = ?, 
         phone_number = ?, 
         role_id = ?
-    WHERE uuid = ?`;
+    WHERE ID = ?`;
 
   const values = [
     updatedData.first_name,
@@ -66,19 +66,26 @@ async function updateUserByUuid(uuid, userData) {
     updatedData.email,
     updatedData.phone_number,
     updatedData.role_id,
-    uuid,
+    ID,
   ];
 
-  return await db.query(query, values);
+  const [updateResult] = await db.query(query, values);
+
+  if (updateResult.affectedRows === 0) {
+    throw new Error("Error updating user");
+  }
+
+  return { status: "success", message: "User updated successfully" };
 }
 
-// Delete user by UUID
-async function deleteUserByUuid(uuid) {
-  const query = `DELETE FROM Users WHERE uuid = ?`;
-  return await db.query(query, [uuid]);
+
+// Delete User by ID
+async function deleteUserByID(ID) {
+  const query = `DELETE FROM Users WHERE ID = ?`;
+  return await db.query(query, [ID]);
 }
 
-// Get user by email
+// Get User by email
 async function getUserByEmail(email) {
   try {
     const trimmedEmail = email.trim().toLowerCase();
@@ -90,7 +97,7 @@ async function getUserByEmail(email) {
   }
 }
 
-// Check if user exists
+// Check if User exists
 const checkIfUserExists = async (email) => {
   try {
     if (!email) return false;
@@ -103,9 +110,9 @@ const checkIfUserExists = async (email) => {
   }
 };
 
-// Get users by role
+// Get Users by role
 const getUsersByRole = async (roleId) => {
-  const sql = `SELECT ID, email, first_name, last_name, phone_number, role_id, uuid 
+  const sql = `SELECT ID, email, first_name, last_name, phone_number, role_id, ID 
                FROM Users WHERE role_id = ?`;
   return await db.query(sql, [roleId]);
 };
@@ -113,9 +120,9 @@ const getUsersByRole = async (roleId) => {
 module.exports = {
   getAllUsers,
   createUser,
-  getUserByUuid,
-  updateUserByUuid,
-  deleteUserByUuid,
+  getUserByID,
+  updateUserByID,
+  deleteUserByID,
   getUserByEmail,
   checkIfUserExists,
   getUsersByRole,
