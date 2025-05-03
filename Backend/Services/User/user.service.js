@@ -3,74 +3,68 @@ const db = require("../../Config/db.config");
 // Get all users
 async function getAllUsers() {
   const query = `SELECT * FROM users INNER JOIN roles ON users.role_id = roles.role_id`;
-  return await db.query(query); // No changes needed for this, it should work as expected.
+  return await db.query(query);
 }
 
-// Create user (handles optional user_phone_number & user_img)
+// Create user
 async function createUser(user) {
   const query = `
-    INSERT INTO users 
-    (user_first_name, user_last_name, user_email, user_phone_number, user_pass, user_img, role_id) 
-    VALUES (?, ?, ?, ?, ?, ?, ?)`;
+    INSERT INTO Users 
+    (first_name, last_name, email, phone_number, password, role_id) 
+    VALUES (?, ?, ?, ?, ?, ?)`;
 
   const values = [
-    user.user_first_name,
-    user.user_last_name,
-    user.user_email,
-    user.user_phone_number || null,
-    user.user_pass,
-    user.user_img || null,
+    user.first_name,
+    user.last_name,
+    user.email,
+    user.phone_number || null,
+    user.password,
     user.role_id || 1,
   ];
 
   return await db.query(query, values);
 }
 
-
 // Get user by UUID
 async function getUserByUuid(uuid) {
-  const query = `SELECT * FROM users WHERE uuid = ?`;
+  const query = `SELECT * FROM Users WHERE uuid = ?`;
   const rows = await db.query(query, [uuid]);
   return rows.length ? rows[0] : null;
 }
+
+// Update user by UUID
 async function updateUserByUuid(uuid, userData) {
   if (!uuid) {
     throw new Error("UUID is required for updating a user.");
   }
 
-  // 1. Fetch current user data
   const existingUser = await getUserByUuid(uuid);
   if (!existingUser) {
     throw new Error("User not found.");
   }
 
-  // 2. Merge new data with existing data
   const updatedData = {
-    user_first_name: userData.user_first_name ?? existingUser.user_first_name,
-    user_last_name: userData.user_last_name ?? existingUser.user_last_name,
-    user_email: userData.user_email ?? existingUser.user_email,
-    user_phone_number: userData.user_phone_number ?? existingUser.user_phone_number,
-    user_img: userData.user_img ?? existingUser.user_img,
+    first_name: userData.first_name ?? existingUser.first_name,
+    last_name: userData.last_name ?? existingUser.last_name,
+    email: userData.email ?? existingUser.email,
+    phone_number: userData.phone_number ?? existingUser.phone_number,
     role_id: userData.role_id ?? existingUser.role_id,
   };
 
-  // 3. Update query
   const query = `
-    UPDATE users 
-    SET user_first_name = ?, 
-        user_last_name = ?, 
-        user_email = ?, 
-        user_phone_number = ?, 
-        user_img = ?, 
+    UPDATE Users 
+    SET first_name = ?, 
+        last_name = ?, 
+        email = ?, 
+        phone_number = ?, 
         role_id = ?
     WHERE uuid = ?`;
 
   const values = [
-    updatedData.user_first_name,
-    updatedData.user_last_name,
-    updatedData.user_email,
-    updatedData.user_phone_number,
-    updatedData.user_img,
+    updatedData.first_name,
+    updatedData.last_name,
+    updatedData.email,
+    updatedData.phone_number,
     updatedData.role_id,
     uuid,
   ];
@@ -78,65 +72,43 @@ async function updateUserByUuid(uuid, userData) {
   return await db.query(query, values);
 }
 
-
 // Delete user by UUID
 async function deleteUserByUuid(uuid) {
-  const query = `DELETE FROM users WHERE uuid = ?`;
+  const query = `DELETE FROM Users WHERE uuid = ?`;
   return await db.query(query, [uuid]);
 }
 
-// Get user by email (updated to handle single row return)
-async function getUserByEmail(user_email) {
+// Get user by email
+async function getUserByEmail(email) {
   try {
-    const trimmedEmail = user_email.trim().toLowerCase(); // Normalize input
-
-    const query = `SELECT * FROM users WHERE LOWER(TRIM(user_email)) = ?`;
+    const trimmedEmail = email.trim().toLowerCase();
+    const query = `SELECT * FROM Users WHERE LOWER(TRIM(email)) = ?`;
     const rows = await db.query(query, [trimmedEmail]);
-
-    // console.log("Query Result:", rows); // Debugging log
-
-    return rows.length ? rows[0] : null; // Return the first row if available
+    return rows.length ? rows[0] : null;
   } catch (error) {
-    // console.error("Database Error:", error);
-    return null; // Return null in case of error
+    return null;
   }
 }
 
-// Check if user exists (updated to handle single row return)
-const checkIfUserExists = async (user_email) => {
+// Check if user exists
+const checkIfUserExists = async (email) => {
   try {
-    if (!user_email) {
-      // console.error("❌ checkIfUserExists: Email is undefined or null.");
-      return false;
-    }
-
-    const trimmedEmail = user_email.trim().toLowerCase();
-    // console.log("📧 Checking existence for:", trimmedEmail);
-
-    const query = "SELECT * FROM users WHERE LOWER(TRIM(user_email)) = ?";
+    if (!email) return false;
+    const trimmedEmail = email.trim().toLowerCase();
+    const query = "SELECT * FROM Users WHERE LOWER(TRIM(email)) = ?";
     const rows = await db.query(query, [trimmedEmail]);
-
-    // console.log("🔍 Query Result:", rows);
-
-    if (rows.length > 0) {
-      // console.log("✅ User found:", rows[0]);
-      return true;
-    }
-
-    // console.log("🚫 No user found with this email.");
-    return false;
+    return rows.length > 0;
   } catch (error) {
-    // console.error("❌ Database error in checkIfUserExists:", error);
     return false;
   }
 };
-const getUsersByRole = async (roleId) => {
-  const sql = `SELECT user_id, user_email, user_first_name, user_last_name, user_phone_number, role_id, active_user_status, user_added_date, user_img,uuid 
-               FROM users WHERE role_id = ?`;
 
+// Get users by role
+const getUsersByRole = async (roleId) => {
+  const sql = `SELECT ID, email, first_name, last_name, phone_number, role_id, uuid 
+               FROM Users WHERE role_id = ?`;
   return await db.query(sql, [roleId]);
 };
-
 
 module.exports = {
   getAllUsers,

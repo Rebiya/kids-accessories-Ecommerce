@@ -23,7 +23,8 @@
     "jwt-decode": "^4.0.0",
     "mysql2": "^3.14.1",
     "sanitize": "^2.1.2",
-    "stripe": "^17.4.0"
+    "stripe": "^17.4.0",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.15"
