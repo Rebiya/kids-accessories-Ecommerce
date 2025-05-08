@@ -69,8 +69,8 @@ async function updateUserByID(ID, UserData) {
     ID,
   ];
 
-  const [updateResult] = await db.query(query, values);
-
+  const updateResult = await db.query(query, values);
+console.log(updateResult.affectedRows);
   if (updateResult.affectedRows === 0) {
     throw new Error("Error updating user");
   }

@@ -13,9 +13,9 @@ const getAllUsers = async (req, res) => {
 };
 
 // Get user by UUID
-const getUserByUuid = async (req, res) => {
+const getUserByID = async (req, res) => {
   try {
-    const user = await userService.getUserByUuid(req.params.uuid);
+    const user = await userService.getUserByID(req.params.uuid);
     if (!user) return res.status(404).json({ message: "User not found" });
     return res.status(200).json({ user });
   } catch (error) {
@@ -63,14 +63,14 @@ const updateUserByUuid = async (req, res) => {
     const updatedData = req.body;
 
     if (!uuid) {
-      return res.status(400).json({ message: "UUID is required" });
+      return res.status(400).json({ message: "ID is required" });
     }
 
     if (!updatedData || Object.keys(updatedData).length === 0) {
       return res.status(400).json({ message: "No data provided for update" });
     }
 
-    const result = await userService.updateUserByUuid(uuid, updatedData);
+    const result = await userService.updateUserByID(uuid, updatedData);
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -83,10 +83,10 @@ const updateUserByUuid = async (req, res) => {
 };
 
 // Delete user by UUID
-const deleteUserByUuid = async (req, res) => {
+const deleteUserByID= async (req, res) => {
   try {
     const { uuid } = req.params;
-    const result = await userService.deleteUserByUuid(uuid);
+    const result = await userService.deleteUserByID(uuid);
     if (result.affectedRows === 0)
       return res.status(404).json({ message: "User not found" });
 
@@ -120,8 +120,8 @@ const getUsersByRole = async (req, res) => {
 module.exports = {
   getAllUsers,
   createUser,
-  getUserByUuid,
+  getUserByID,
   updateUserByUuid,
-  deleteUserByUuid,
+  deleteUserByID,
   getUsersByRole,
 };

@@ -56,7 +56,7 @@ const signup = async (userData) => {
         normalizedEmail,
         hashedPassword,
         role_id ?? 1,
-        phone_number,
+        phone_number??null,
         first_name,
         last_name,
       ]

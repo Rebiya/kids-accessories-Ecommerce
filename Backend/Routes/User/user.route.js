@@ -8,7 +8,7 @@ router.get("/users", userController.getAllUsers);
 router.get(
   "/users/:uuid",
   authMiddleware([2, 3]),
-  userController.getUserByUuid
+  userController.getUserByID
 );
 router.put(
   "/users/:uuid",
@@ -18,7 +18,7 @@ router.put(
 router.delete(
   "/users/:uuid",
   authMiddleware([3]),
-  userController.deleteUserByUuid
+  userController.deleteUserByID
 );
 router.get(
   "/users/role/:roleId",
