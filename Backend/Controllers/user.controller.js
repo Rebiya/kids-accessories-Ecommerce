@@ -1,4 +1,4 @@
-const userService = require("../../Services/User/user.service");
+const userService = require("../Services/user.service");
 const bcrypt = require("bcrypt");
 
 // Get all users
