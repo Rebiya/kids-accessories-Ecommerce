@@ -3,7 +3,6 @@ import Layout from "../../Components/Layout/Layout";
 import CarouselEffect from "../../Components/Carousel/CarouselEffect";
 import Product from "../../Components/Product/Product";
 import Category from "../../Components/Category/Category";
-import footer from "../../Components/Footer/Footer";
 const Landing = () => {
   return (
     <div>
@@ -12,7 +11,6 @@ const Landing = () => {
         <Category />
         <Product />
       </Layout>
-      <footer />
     </div>
   );
 };

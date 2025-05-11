@@ -1,14 +1,14 @@
-import React, { useContext } from "react";
+import React from "react";
 import styles from "./Product.module.css";
 import Rating from "@mui/material/Rating";
 import { Link } from "react-router-dom";
 import Currency from "./Currency";
-import { DataContext } from "../DataProvider/DataProvider";
+import { useAuth } from "../DataProvider/DataProvider";
 import { type } from "../../Utility/action.type";
 
 const ProductCard = ({ product, flex, renderDesc, renderAdd }) => {
   const { title, image, rating, price, category, id, description } = product;
-  const [state, dispatch] = useContext(DataContext);
+  const { dispatch } = useAuth();
 
   const addToCart = () => {
     dispatch({

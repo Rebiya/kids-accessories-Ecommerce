@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import LandingPage from "./Pages/Landing/Landing";
-import AuthPage from "./Pages/Auth/Auth";
+import AuthPage from "./Pages/Auth/signin/Auth";
 import OrdersPage from "./Pages/Orders/Orders";
 import Payment from "./Pages/Payment/Payment";
 import CartPage from "./Pages/Cart/Cart";
@@ -10,6 +10,10 @@ import ProductDetails from "./Pages/ProductDetails/ProductDetails";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import ProtectedRoute from "./Components/ProtectedRoute/ProtectedRoute";
+import Register from "./Pages/Auth/signup/Signup";
+import Unauthorized from "./Components/Unauthorized/Unauthorized";
+import Support from "./Pages/Support/Support";
+import MyAccount from "./Pages/MyAccount/MyAccount";
 const stripePromise = loadStripe(
   "pk_test_51QTVpPA3g8fQRAS3vKHatPJBiP7avo3wdXeTS417I8eXaxIzevZYFIwMZUcheDTzoEVZvdo5HgX9Go5J4OnHuigw003BMQpUEt"
 );
@@ -20,10 +24,26 @@ const Routers = () => {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/auth" element={<AuthPage />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/support" element={<Support />} />
+        <Route path="/account" element={<MyAccount />} />
+        {/* <Route path="/unauthorized" element={<Unauthorized />} /> */}
+        <Route
+          path="/unauthorized"
+          element={
+            <ProtectedRoute
+              msg={"you must log in to access this page"}
+              redirect={"/unauthorized"}
+            >
+              <Unauthorized />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/orders"
           element={
             <ProtectedRoute
+            allowedRoles={[2]}
               msg={"you must log in to  access your orders "}
               redirect={"/orders"}
             >
