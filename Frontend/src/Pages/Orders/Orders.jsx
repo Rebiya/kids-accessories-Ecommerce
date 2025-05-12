@@ -24,7 +24,23 @@ function Orders() {
     };
 
     fetchOrders();
-  }, [user]);
+  }, [user]);useEffect(() => {
+  const fetchOrders = async () => {
+    if (!user || !user.ID) return;
+
+    try {
+      console.log("Fetching orders for user ID:", user?.ID);
+      const userOrders = await getOrdersByUserId(user.ID);
+      console.log("Fetched orders:", userOrders);
+      setOrders(userOrders);
+    } catch (error) {
+      console.error("Failed to fetch orders:", error);
+    }
+  };
+
+  fetchOrders();
+}, [user?.ID]);
+
 
   return (
     <Layout>

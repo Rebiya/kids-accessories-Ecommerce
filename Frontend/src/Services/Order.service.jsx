@@ -12,7 +12,7 @@ export const createOrder = async ({ userId, basket, amount, created, paymentInte
 };
 
 export const getOrdersByUserId = async (userId) => {
-  const response = await axiosInstance.get(`/order/${userId}`);
+  const response = await axiosInstance.get(`/order/user/${userId}`);
   return response.data;
 };
 
