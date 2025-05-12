@@ -1,5 +1,4 @@
-// services/order.service.js
-import axiosInstance from "../API/Axios"; // make sure axiosInstance is properly configured
+import { axiosInstance } from "../API/Axios"; // ✅ FIXED
 
 export const createOrder = async ({ userId, basket, amount, created, paymentIntentId }) => {
   const response = await axiosInstance.post("/order", {
@@ -12,8 +11,8 @@ export const createOrder = async ({ userId, basket, amount, created, paymentInte
   return response.data;
 };
 
-export const getOrderById = async (orderId) => {
-  const response = await axiosInstance.get(`/order/${orderId}`);
+export const getOrdersByUserId = async (userId) => {
+  const response = await axiosInstance.get(`/order/${userId}`);
   return response.data;
 };
 

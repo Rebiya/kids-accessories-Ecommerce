@@ -12,7 +12,7 @@ import { type } from "../../Utility/action.type";
 
 function Payment() {
   const { state: { user, basket }, dispatch } = useAuth();
-  console.log(user)
+  // console.log(user)
   const [cardError, setCardError] = useState(null);
   const [processing, setProcessing] = useState(false);
 

@@ -43,7 +43,7 @@ const Routers = () => {
           path="/orders"
           element={
             <ProtectedRoute
-            allowedRoles={[2]}
+            allowedRoles={[1,2,3]}
               msg={"you must log in to  access your orders "}
               redirect={"/orders"}
             >

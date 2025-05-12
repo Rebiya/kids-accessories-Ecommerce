@@ -29,8 +29,16 @@ async function getOrderById(id) {
   return rows[0];
 }
 
+//get orders by user id
+async function getOrdersByUserId(userId) {
+  const sql = `SELECT * FROM Orders WHERE user_id = ?`;
+  const rows = await db.query(sql, [userId]);
+  return rows;
+}
+
 module.exports = {
   createOrder,
   getAllOrders,
   getOrderById,
+  getOrdersByUserId,
 };

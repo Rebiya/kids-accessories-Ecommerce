@@ -28,5 +28,15 @@ exports.getOrderById = async (req, res) => {
   }
 };
 
+exports.getOrdersByUserId = async (req, res) => {
+  try {
+    const orders = await orderService.getOrdersByUserId(req.params.id);
+    if (!orders) return res.status(404).json({ error: "Orders not found" });
+    res.json(orders);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
 
 

@@ -1,49 +1,50 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import classes from "./Order.module.css";
 import Layout from "../../Components/Layout/Layout";
-import { db } from "../../Utility/firebase";
-import { DataContext } from "../../Components/DataProvider/DataProvider";
+import { useAuth } from "../../Components/DataProvider/DataProvider";
 import ProductCard from "../../Components/Product/ProductCard";
+import { getOrdersByUserId } from "../../Services/Order.service";
+
 function Orders() {
-  const [{ user }, dispatch] = useContext(DataContext);
+  const { state: { user } } = useAuth();
   const [orders, setOrders] = useState([]);
+
   useEffect(() => {
-    if (user) {
-      db.collection("users")
-        .doc(user.uid)
-        .collection("orders")
-        .orderBy("created", "desc")
-        .onSnapshot((Snapshot) => {
-          // console.log(Snapshot)
-          setOrders(
-            Snapshot.docs.map((doc) => ({
-              id: doc.id,
-              data: doc.data()
-            }))
-          );
-        });
-    } else {
-      setOrders([]); //empety orders
-    }
-  }, []);
+    const fetchOrders = async () => {
+      try {
+        if (user?.ID) {
+          const userOrders = await getOrdersByUserId(user.ID);
+          setOrders(userOrders);
+        } else {
+          setOrders([]);
+        }
+      } catch (error) {
+        console.error("Failed to fetch orders:", error);
+      }
+    };
+
+    fetchOrders();
+  }, [user]);
 
   return (
     <Layout>
       <section className={classes.container}>
         <div className={classes.orders_container}>
-          <h1>your order </h1>
-          {orders?.length == 0 && (
+          <h1>Your Orders</h1>
+          {orders.length === 0 && (
             <div style={{ padding: "30px" }}>You don't have orders yet.</div>
           )}
-          {/* orders item list */}
           <div>
-            {orders?.map((eachOrder, i) => {
+            {orders.map((eachOrder, i) => {
+              const parsedBasket = JSON.parse(eachOrder.basket || "[]");
               return (
                 <div key={i}>
                   <hr />
-                  <p>Order ID:{eachOrder.id}</p>
-                  {eachOrder?.data?.basket?.map((order) => (
-                    <ProductCard flex={true} product={order} key={order.id} />
+                  <p>Order ID: {eachOrder.id}</p>
+                  <p>Amount: ${eachOrder.amount}</p>
+                  <p>Created: {new Date(eachOrder.created * 1000).toLocaleString()}</p>
+                  {parsedBasket.map((order, index) => (
+                    <ProductCard flex={true} product={order} key={index} />
                   ))}
                 </div>
               );
