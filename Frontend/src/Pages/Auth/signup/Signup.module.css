@@ -1,0 +1,108 @@
+.signupContainer {
+  max-width: 500px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.signupHeader {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.signupHeader h1 {
+  color: #000000;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.signupForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.formGroup label {
+  color: #000000;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.formGroup input {
+  padding: 0.8rem;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.formGroup input:focus {
+  outline: none;
+  border-color: #d4af37;
+  box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+}
+
+.submitButton {
+  background-color: #d4af37;
+  color: #000000;
+  padding: 0.8rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 1rem;
+}
+
+.submitButton:hover {
+  background-color: #c9a227;
+}
+
+.submitButton:disabled {
+  background-color: #e5e7eb;
+  cursor: not-allowed;
+}
+
+.errorMessage {
+  color: #ef4444;
+  background-color: #fee2e2;
+  padding: 0.8rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.loginRedirect {
+  text-align: center;
+  margin-top: 1.5rem;
+  color: #4b5563;
+}
+
+.loginLink {
+  color: #d4af37;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.loginLink:hover {
+  text-decoration: underline;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .signupContainer {
+    margin: 1rem;
+    padding: 1.5rem;
+  }
+}

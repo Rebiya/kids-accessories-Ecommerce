@@ -1,7 +1,7 @@
-import React, { useContext } from "react";
+import React from "react";
 import "./Cart.module.css";
 import Layout from "../../Components/Layout/Layout";
-import { DataContext } from "../../Components/DataProvider/DataProvider";
+import { useAuth } from "../../Components/DataProvider/DataProvider";
 import ProductCard from "../../Components/Product/ProductCard";
 import CurrencyFormat from "../../Components/Product/Currency";
 import { Link } from "react-router-dom";
@@ -11,12 +11,11 @@ import { IoIosArrowDown } from "react-icons/io";
 import { IoIosArrowUp } from "react-icons/io";
 
 function Cart() {
-  const [{ basket, user }, dispatch] = useContext(DataContext);
+  const { state: { basket, user }, dispatch } = useAuth();
   const total = basket.reduce(
     (amount, item) => item.price * item.amount + amount,
     0
   );
-  // console.log(total);
 
   const increment = (item) => {
     dispatch({

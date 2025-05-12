@@ -1,0 +1,320 @@
+.supportContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+.header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+  color: #d4af37;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.headerIcon {
+  margin-right: 15px;
+  font-size: 2rem;
+}
+
+.header p {
+  font-size: 1.1rem;
+  color: #666;
+}
+
+.tabs {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 30px;
+  border-bottom: 2px solid #eee;
+}
+
+.tabButton {
+  padding: 12px 25px;
+  margin: 0 10px;
+  border: none;
+  background: none;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #666;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: all 0.3s ease;
+  border-radius: 5px 5px 0 0;
+}
+
+.tabButton svg {
+  margin-right: 8px;
+}
+
+.tabButton:hover {
+  color: #d4af37;
+  background-color: rgba(212, 175, 55, 0.1);
+}
+
+.tabButton.active {
+  color: #d4af37;
+  border-bottom: 3px solid #d4af37;
+  background-color: rgba(212, 175, 55, 0.1);
+}
+
+.content {
+  background-color: white;
+  border-radius: 8px;
+  padding: 30px;
+  box-shadow: 0 10px 30px rgba(212, 175, 55, 0.2);
+  min-height: 400px;
+}
+
+/* AI Assistant Styles */
+.aiContainer {
+  display: flex;
+  flex-direction: column;
+  height: 500px;
+}
+
+.chatWindow {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  margin-bottom: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+.message {
+  padding: 12px 15px;
+  margin-bottom: 15px;
+  border-radius: 18px;
+  max-width: 70%;
+  line-height: 1.5;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.aiMessage {
+  background-color: #f8f1e5;
+  color: #333;
+  border-bottom-left-radius: 5px;
+  margin-right: auto;
+}
+
+.userMessage {
+  background-color: #d4af37;
+  color: white;
+  border-bottom-right-radius: 5px;
+  margin-left: auto;
+}
+
+.aiForm {
+  display: flex;
+  margin-top: 20px;
+}
+
+.aiInput {
+  flex: 1;
+  padding: 15px;
+  border: 2px solid #d4af37;
+  border-radius: 30px;
+  font-size: 1rem;
+  outline: none;
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+}
+
+.aiSubmit {
+  background-color: #d4af37;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  margin-left: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+  transition: all 0.3s ease;
+}
+
+.aiSubmit:hover {
+  background-color: #c5a030;
+  transform: scale(1.05);
+}
+
+/* Contact Styles */
+.contactContainer {
+  display: flex;
+  gap: 30px;
+}
+
+.contactInfo {
+  flex: 1;
+  padding: 20px;
+  background-color: #f8f1e5;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(212, 175, 55, 0.1);
+}
+
+.contactInfo h2 {
+  color: #d4af37;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.contactInfo h2 svg {
+  margin-right: 10px;
+}
+
+.contactInfo p {
+  margin-bottom: 15px;
+  font-size: 1rem;
+}
+
+.contactInfo a {
+  color: #d4af37;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.contactInfo a:hover {
+  text-decoration: underline;
+}
+
+.contactForm {
+  flex: 2;
+  padding: 20px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(212, 175, 55, 0.1);
+}
+
+.contactForm h2 {
+  color: #d4af37;
+  margin-bottom: 20px;
+}
+
+.formGroup {
+  margin-bottom: 20px;
+}
+
+.formGroup label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #555;
+}
+
+.formInput, .formTextarea {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.formInput:focus, .formTextarea:focus {
+  border-color: #d4af37;
+  outline: none;
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
+}
+
+.submitButton {
+  background-color: #d4af37;
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+}
+
+.submitButton:hover {
+  background-color: #c5a030;
+  transform: translateY(-2px);
+  box-shadow: 0 7px 20px rgba(212, 175, 55, 0.4);
+}
+
+/* Info Styles */
+.infoContainer {
+  padding: 20px;
+}
+
+.infoContainer h2 {
+  color: #d4af37;
+  margin-bottom: 30px;
+  text-align: center;
+  font-size: 2rem;
+}
+
+.infoCard {
+  background-color: white;
+  border-radius: 8px;
+  padding: 25px;
+  margin-bottom: 25px;
+  box-shadow: 0 5px 20px rgba(212, 175, 55, 0.15);
+  border-left: 4px solid #d4af37;
+  transition: all 0.3s ease;
+}
+
+.infoCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(212, 175, 55, 0.25);
+}
+
+.infoCard h3 {
+  color: #d4af37;
+  margin-bottom: 15px;
+  font-size: 1.3rem;
+}
+
+.infoCard ol, .infoCard ul {
+  padding-left: 20px;
+}
+
+.infoCard li {
+  margin-bottom: 10px;
+  line-height: 1.6;
+  color: #555;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .contactContainer {
+    flex-direction: column;
+  }
+  
+  .tabs {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .tabButton {
+    width: 100%;
+    margin: 5px 0;
+    justify-content: center;
+  }
+  
+  .header h1 {
+    font-size: 2rem;
+  }
+  
+  .content {
+    padding: 15px;
+  }
+}
