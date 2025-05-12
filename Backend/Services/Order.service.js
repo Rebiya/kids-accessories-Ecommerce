@@ -1,20 +1,20 @@
 const db = require("../Config/db.config");
 
 async function createOrder(orderData) {
-  const { product_id, user_id, stripe_payment_id } = orderData;
+  const { user_id, basket, amount, created, stripe_payment_id } = orderData;
 
-   // Validate input
-  if (
-    product_id === undefined ||
-    user_id === undefined ||
-    stripe_payment_id === undefined
-  ) {
-    throw new Error("All fields (product_id, user_id, stripe_payment_id) are required");
-  }
+  const sql = `
+    INSERT INTO Orders (user_id, basket, amount, created, stripe_payment_id)
+    VALUES (?, ?, ?, ?, ?)
+  `;
+  const result = await db.query(sql, [
+    user_id,
+    JSON.stringify(basket), // Ensure basket is stored as valid JSON
+    amount,
+    created,
+    stripe_payment_id,
+  ]);
 
-
-  const sql = `INSERT INTO Orders (product_id, user_id, stripe_payment_id) VALUES (?, ?, ?)`;
-  const result = await db.query(sql, [product_id, user_id, stripe_payment_id]);
   return { id: result.insertId, ...orderData };
 }
 
