@@ -8,7 +8,7 @@ const userRouter = require("./user.route.js");
 const productRouter = require("./Product.route.js");
 const categoryRouter = require("./Category.route.js");
 const orderRouter = require("./Order.route.js"); 
-
+const stripeRouter = require("./Stripe.route.js");
 
 // Use the imported routers with correct paths
 router.use(ForgotPassRouter);
@@ -19,5 +19,6 @@ router.use(userRouter);
 router.use(productRouter);
 router.use(categoryRouter);
 router.use(orderRouter);
+router.use(stripeRouter);
 
 module.exports = router;

@@ -41,7 +41,6 @@ const Signup = () => {
       <div className={styles.signupHeader}>
         <h1>Create Account</h1>
         {error && <div className={styles.errorMessage}>{error}</div>}
-        {state.authError && <div className={styles.errorMessage}>{state.authError}</div>}
       </div>
       
       <form onSubmit={handleSubmit} className={styles.signupForm}>
