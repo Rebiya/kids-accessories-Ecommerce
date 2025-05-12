@@ -6,8 +6,8 @@
 }
 
 .footer__backToTop {
-  background-color: #F9B02E; /* Bright gold button */
-  color: #1d0202; /* Black text */
+  background-color: #1a1515; /* Slightly deeper gold on hover */
+  color: #F9B02E;
   text-align: center;
   padding: 15px 0;
   font-size: 13px;
@@ -16,8 +16,9 @@
 }
 
 .footer__backToTop:hover {
-  background-color: #1a1515; /* Slightly deeper gold on hover */
-  color: #fff;
+  background-color: #F9B02E; /* Bright gold button */
+  color: #1d0202; /* Black text */
+
 }
 
 .footer__main {

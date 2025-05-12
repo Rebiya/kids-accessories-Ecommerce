@@ -4,6 +4,8 @@ import { useAuth } from "./Components/DataProvider/DataProvider";
 import { type } from "./Utility/action.type";
 import { useEffect } from "react";
 import { validateToken } from "./Services/AuthService";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   const { state, dispatch } = useAuth();
@@ -34,6 +36,18 @@ function App() {
   return (
     <>
       <Routers />
+          <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </>
   );
 }

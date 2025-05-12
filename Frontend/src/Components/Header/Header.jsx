@@ -15,7 +15,8 @@ const Header = () => {
   const { state: { basket, user }, dispatch } = useAuth();
   const [showDropdown, setShowDropdown] = useState(false);
   const [showCategories, setShowCategories] = useState(false);
-  
+  const [searchQuery, setSearchQuery] = useState("");
+
   const totalItem = basket?.reduce((amount, item) => {
     return item.amount + amount;
   }, 0);
@@ -29,6 +30,24 @@ const Header = () => {
   const toggleDropdown = () => setShowDropdown(!showDropdown);
   const toggleCategories = () => setShowCategories(!showCategories);
 
+  const handleSearch = async () => {
+    if (!searchQuery.trim()) return;
+    try {
+      const res = await axios.get(`/products/search?q=${searchQuery}`);
+      if (res.data.success && res.data.data.length > 0) {
+        setSearchResults(res.data.data); // Optional for later display
+        console.log("Search Results:", res.data.data);
+      } else {
+        console.info("No matching products found.");
+      }
+    } catch (error) {
+      console.error("Search failed:", error);
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') handleSearch();
+  }; 
   const categories = [
     { name: "Baby Essentials", icon: <FaBaby />, path: "/baby-essentials" },
     { name: "Health & Hygiene", icon: <MdHealthAndSafety />, path: "/health-hygiene" },
@@ -74,13 +93,17 @@ const Header = () => {
       </div>
 
       {/* Search Section */}
+         {/* Search Section */}
       <div className={styles.searchSection}>
         <Form.Control
           type="text"
           placeholder="Search for kids accessories..."
           className={styles.searchInput}
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          onKeyDown={handleKeyDown} // Allows "Enter" key
         />
-        <button className={styles.searchButton}>
+        <button className={styles.searchButton} onClick={handleSearch}>
           <IoSearch className={styles.searchIcon} />
         </button>
       </div>

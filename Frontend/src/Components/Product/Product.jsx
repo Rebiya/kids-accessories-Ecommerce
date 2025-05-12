@@ -1,26 +1,25 @@
 import React, { useEffect, useState } from "react";
 import ProductCard from "./ProductCard";
-import styles from "./Product.module.css"; // Add CSS styles if needed
+import styles from "./Product.module.css";
+import { ProductService } from "../../Services/Product.Service"; // Adjust the path as needed
 
 const Product = () => {
-  const [products, setProducts] = useState([]); // Updated to use camelCase for consistency
+  const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    fetch("https://fakestoreapi.com/products")
-      .then((res) => res.json())
-      .then((data) => {
-        setProducts(data);
-      })
-      .catch((error) => {
-        console.error("Error fetching products:", error);
-      });
+    const fetchProducts = async () => {
+      const data = await ProductService.getAllProducts();
+      setProducts(data);
+    };
+
+    fetchProducts();
   }, []);
 
   return (
     <div className={styles.Product_container}>
       {products.map((singleProduct) => (
         <ProductCard
-          key={singleProduct.id}
+          key={singleProduct.ID} // Use ID from the new Product interface
           product={singleProduct}
           renderAdd={true}
         />

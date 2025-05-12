@@ -32,41 +32,55 @@ function Payment() {
     e?.error?.message ? setCardError(e?.error?.message) : setCardError("");
   };
 
-  const handlePayment = async (e) => {
-    e.preventDefault();
-    try {
-      setProcessing(true);
-      const response = await axiosInstance({
-        method: "POST",
-        url: `/payment/create?total=${total * 100}`
-      });
-      
-      const clientSecret = response.data?.clientSecret;
-      const { paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
-        payment_method: {
-          card: elements.getElement(CardElement)
-        }
-      });
+ const handlePayment = async (e) => {
+  e.preventDefault();
+  try {
+    setProcessing(true);
 
-      await db
-        .collection("users")
-        .doc(user.uid)
-        .collection("orders")
-        .doc(paymentIntent.id)
-        .set({
-          basket: basket,
-          amount: paymentIntent.amount,
-          created: paymentIntent.created
-        });
+    const response = await axiosInstance({
+      method: "POST",
+      url: `/payment/create?total=${total * 100}`
+    });
 
-      dispatch({ type: type.EMPTY_BASKET });
+    const clientSecret = response?.data?.clientSecret;
+    if (!clientSecret) throw new Error("No client secret returned");
+
+    const result = await stripe.confirmCardPayment(clientSecret, {
+      payment_method: {
+        card: elements.getElement(CardElement)
+      }
+    });
+
+    if (result.error) {
+      setCardError(result.error.message);
       setProcessing(false);
-      navigate("/orders", { state: { msg: "you have placed new order" } });
-    } catch (error) {
-      console.log(error);
-      setProcessing(false);
+      return;
     }
-  };
+
+    const paymentIntent = result.paymentIntent;
+    if (!paymentIntent) throw new Error("No paymentIntent returned");
+
+    await db
+      .collection("users")
+      .doc(user.uid)
+      .collection("orders")
+      .doc(paymentIntent.id)
+      .set({
+        basket,
+        amount: paymentIntent.amount,
+        created: paymentIntent.created
+      });
+
+    dispatch({ type: type.EMPTY_BASKET });
+    setProcessing(false);
+    navigate("/orders", { state: { msg: "you have placed new order" } });
+  } catch (error) {
+    console.error("Payment Error:", error);
+    setCardError(error.message);
+    setProcessing(false);
+  }
+};
+
 
   return (
     <Layout>
