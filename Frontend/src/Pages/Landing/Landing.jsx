@@ -18,7 +18,6 @@ const Landing = () => {
       </Layout>
 
       <footer />
-<ProductDashboard/>
 
     </div>
   );
