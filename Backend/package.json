@@ -1,10 +1,11 @@
 {
-  "name": "backend-amazon",
+  "name": "backend-kids-accessories",
   "version": "1.0.0",
   "main": "Index.js",
   "scripts": {
     "start": "node Index.js",
     "dev": "nodemon Index.js",
+    "deploy": "firebase deploy --only functions",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -19,11 +20,12 @@
     "express": "^4.21.2",
     "express-sanitizer": "^1.0.6",
     "firebase": "^11.6.1",
+    "firebase-admin": "^13.3.0",
     "jsonwebtoken": "^9.0.2",
     "jwt-decode": "^4.0.0",
     "mysql2": "^3.14.1",
     "sanitize": "^2.1.2",
-    "stripe": "^17.4.0",
+    "stripe": "^17.7.0",
     "uuid": "^11.1.0"
   },
   "devDependencies": {
