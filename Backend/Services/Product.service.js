@@ -35,6 +35,17 @@ async function getProductById(id) {
 }
 
 async function createProduct(productData) {
+  // Step 1: Get category_id from category_name
+  const categorySql = `SELECT id FROM Category WHERE category_name = ?`;
+  const categoryResult = await query(categorySql, [productData.category_name]);
+
+  if (categoryResult.length === 0) {
+    throw new Error(`Category '${productData.category_name}' does not exist.`);
+  }
+
+  const category_id = categoryResult[0].id;
+
+  // Step 2: Insert product using the retrieved category_id
   const sql = `
     INSERT INTO Products 
     (title, description, image, price, category_id, rating_rate, rating_count, created_at, updated_at)
@@ -45,46 +56,53 @@ async function createProduct(productData) {
     productData.description,
     productData.image,
     productData.price,
-    productData.category_id,
+    category_id,
     productData.rating_rate || 0,
     productData.rating_count || 0
   ];
+
   const result = await query(sql, params);
-  const newProduct = await getProductById(result.insertId);
+
   return {
     success: true,
     message: 'Product created successfully'
   };
 }
 
+
 async function updateProduct(id, productData) {
   const existingProduct = await getProductById(id);
   if (!existingProduct.success) {
     return existingProduct;
   }
-console.log(existingProduct)
+
+  const product = existingProduct.data; // <-- Extract the real product object
+
   const sql = `
     UPDATE Products 
     SET title = ?, description = ?, image = ?, price = ?, category_id = ?, 
         rating_rate = ?, rating_count = ?, updated_at = CURRENT_TIMESTAMP
     WHERE ID = ?
   `;
+
   const params = [
-    productData.title??existingProduct.title,
-    productData.description??existingProduct.description,
-    productData.image??existingProduct.image,
-    productData.price??existingProduct.price,
-    productData.category_id??existingProduct.category_id,
-    productData.rating_rate??existingProduct.rating_rate,
-    productData.rating_count??existingProduct.rating_count,
+    productData.title ?? product.title,
+    productData.description ?? product.description,
+    productData.image ?? product.image,
+    productData.price ?? product.price,
+    productData.category_id ?? product.category_id,
+    productData.rating_rate ?? product.rating_rate,
+    productData.rating_count ?? product.rating_count,
     id
   ];
+
   await query(sql, params);
   return {
     success: true,
     message: 'Product updated successfully'
   };
 }
+
 
 async function deleteProduct(id) {
   const existingProduct = await getProductById(id);
