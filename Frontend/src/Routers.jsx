@@ -66,7 +66,7 @@ const Routers = () => {
         />
         s
         <Route path="/cart" element={<CartPage />} />
-        <Route path="/Category/:category" element={<Results />} />
+        <Route path="/category/:category" element={<Results />} />
         <Route path="/products/:id" element={<ProductDetails />} />
       </Routes>
     </Router>

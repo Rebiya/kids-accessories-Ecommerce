@@ -1,11 +1,11 @@
 const Data = [
   {
     id: 1,
-    title: "Mens Casual Slim Fit",
+    title: "Baby Nail Care Kit",
     price: 15.99,
     description:
-      "The color could be slightly different between on the screen and in practice. / Please note that body builds vary by person, therefore, detailed size information should be reviewed below on the product description.",
-    category: "men's clothing",
+      "This complete baby nail care set includes all the essentials for safe and stress-free nail trimming. The kit features a baby-sized nail clipper with rounded safety tips, a fine-grit emery board, and baby nail scissors with blunt tips. All tools have smooth, rounded edges to prevent accidental scratches. The stainless-steel implements are durable and maintain sharp edges through years of use. The compact case keeps everything organized and portable for home or travel use. All components meet international safety standards for baby products. Makes an excellent baby shower gift for expecting parents. The high-quality materials ensure this set will last through multiple children. An essential kit for maintaining baby's hygiene and preventing scratches to delicate skin.",
+    category: "Baby Essentials",
     image: "https://th.bing.com/th/id/OIP.5hiwxKYmxenEpzmwIgWtLAHaIT?rs=1&pid=ImgDetMain",
     rating: {
       rate: 2.1,
@@ -15,11 +15,11 @@ const Data = [
   },
   {
     id: 2,
-    title: "White Gold Plated Princess",
+    title: "Baby Lotion",
     price: 9.99,
     description:
-      "Classic Created Wedding Engagement Solitaire Diamond Promise Ring for Her. Gifts to spoil your love more for Engagement, Wedding, Anniversary, Valentine's Day...",
-    category: "jewelery",
+      "This nourishing baby lotion is the ultimate moisturizer for delicate skin. Formulated with Aloe vera and Vitamin E. The lightweight formula absorbs quickly without greasy residue, providing long-lasting moisture protection. Free from parabens, phthalates, synthetic fragrances, and mineral oil. The natural ingredients help strengthen baby's skin barrier while calming irritation from dryness or eczema. The subtle aroma comes purely from plant extracts, not artificial fragrances. The lotion is clinically tested for sensitive skin and safe for daily use from newborn stage. Made in small batches to ensure freshness and potency.",
+    category: "Baby Essentials",
     image: "https://lakshmikrishnanaturals.com/admin_panel/storage/app/public/images/products/99101694335936.png",
     rating: {
       rate: 3,
