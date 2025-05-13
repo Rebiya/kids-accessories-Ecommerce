@@ -59,28 +59,30 @@ const handlePayment = async (e) => {
       throw new Error(`Payment not completed. Status: ${paymentIntent.status}`);
     }
 
-    // ✅ 3. Format basket correctly for the backend
+    // 3. Format basket correctly for the backend
     const formattedBasket = basket.map(item => ({
-      product_id: item.id,      // or item.product_id depending on your structure
-      quantity: item.amount     // 'amount' in frontend means 'quantity'
+      product_id: item.id,
+      quantity: item.amount
     }));
 
     // 4. Create order
     const orderResponse = await axiosInstance.post("/order", {
       user_id: user?.ID,
-      basket: JSON.stringify(formattedBasket),  // backend expects a string
-      amount: paymentIntent.amount / 100,       // Convert back from cents
+      basket: JSON.stringify(formattedBasket),
+      amount: paymentIntent.amount / 100,
       created: paymentIntent.created,
       stripe_payment_id: paymentIntent.id
     });
   
     console.log("Order Response:", orderResponse.data);
-    if (orderResponse?.data?.id) {
-    dispatch({ type: type.EMPTY_BASKET });
-    navigate("/orders", { state: { msg: "You have placed a new order" } });
-} else {
-  throw new Error("Failed to create order");
-}
+    
+    // ✅ Updated success check
+    if (orderResponse?.data?.success) {
+      dispatch({ type: type.EMPTY_BASKET });
+      navigate("/orders", { state: { msg: "You have placed a new order" } });
+    } else {
+      throw new Error(orderResponse?.data?.message || "Failed to create order");
+    }
 
   } catch (error) {
     console.error("Payment Error:", error);
@@ -89,7 +91,6 @@ const handlePayment = async (e) => {
     setProcessing(false);
   }
 };
-
 
   return (
     <Layout>

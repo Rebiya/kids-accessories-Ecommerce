@@ -14,13 +14,15 @@ const ProductCard = ({ product, flex, renderDesc, renderAdd }) => {
     dispatch({
       type: type.ADD_TO_BASKET,
       item: {
-        image,
-        title,
-        ID,
-        rating_rate,
-        rating_count     ,
-        description
-      }
+  id: ID, // important for reducer logic
+  image,
+  title,
+  price, // ✅ include price
+  rating_rate,
+  rating_count,
+  description
+}
+
     });
   };
 
