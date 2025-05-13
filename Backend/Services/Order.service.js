@@ -64,30 +64,74 @@ async function getOrderById(id) {
 
 //get orders by user id
 async function getOrdersByUserId(userId) {
-  const sql = `
-    SELECT 
-      o.id AS order_id,
-      o.amount,
-      o.created,
-      o.stripe_payment_id,
-      p.id AS product_id,
-      p.title,
-      p.description,
-      p.image,
-      p.price,
-      p.category_id,
-      p.rating_rate,
-      p.rating_count
-    FROM Orders o
-    JOIN Products p ON o.product_id = p.ID
-    WHERE o.user_id = ?
-    ORDER BY o.created DESC
-  `;
+  try {
+    // 1. Get all distinct orders for the user
+    const orderResults = await db.query(`
+      SELECT 
+        o.id,
+        o.user_id,
+        o.stripe_payment_id,
+        o.created,
+        SUM(o.amount) AS total_amount
+      FROM Orders o
+      WHERE o.user_id = ?
+      GROUP BY o.id, o.user_id, o.stripe_payment_id, o.created
+      ORDER BY o.created DESC
+    `, [userId]);
 
-  const rows = await db.query(sql, [userId]);
+    // Handle different database driver response formats
+    const orderHeaders = Array.isArray(orderResults) 
+      ? orderResults 
+      : Array.isArray(orderResults[0]) 
+        ? orderResults[0] 
+        : [];
 
-  // Group by order_id if needed (optional depending on your frontend)
-  return rows;
+    // If no orders found, return empty array
+    if (!orderHeaders || orderHeaders.length === 0) {
+      return [];
+    }
+
+    // 2. Get products for each order
+    const ordersWithProducts = await Promise.all(
+      orderHeaders.map(async (order) => {
+        const productResults = await db.query(`
+          SELECT 
+            p.id, 
+            p.title,
+            p.description,
+            p.image,
+            p.price,
+            p.category_id,
+            p.rating_rate,
+            p.rating_count,
+            o.amount AS quantity
+          FROM Orders o
+          JOIN Products p ON o.product_id = p.ID
+          WHERE o.id = ?
+        `, [order.id]);
+
+        const products = Array.isArray(productResults)
+          ? productResults
+          : Array.isArray(productResults[0])
+            ? productResults[0]
+            : [];
+
+        return {
+          id: order.id,
+          user_id: order.user_id,
+          stripe_payment_id: order.stripe_payment_id,
+          created: order.created,
+          total_amount: order.total_amount,
+          basket: products
+        };
+      })
+    );
+
+    return ordersWithProducts;
+  } catch (error) {
+    console.error('Error fetching orders:', error);
+    throw error;
+  }
 }
 
 module.exports = {
