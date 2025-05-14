@@ -49,14 +49,14 @@ const Header = () => {
     if (e.key === 'Enter') handleSearch();
   }; 
   const categories = [
-    { name: "Baby Essentials", icon: <FaBaby />, path: "/baby-essentials" },
-    { name: "Health & Hygiene", icon: <MdHealthAndSafety />, path: "/health-hygiene" },
-    { name: "Toys & Education", icon: <FaChild />, path: "/toys-education" },
-    { name: "Clothing", icon: <BsPerson />, path: "/clothing" },
-    { name: "Nursery & Home", icon: <FaHome />, path: "/nursery-home" },
-    { name: "Feeding & Nursing", icon: <FaUtensils />, path: "/feeding-nursing" },
-    { name: "Mom's Support", icon: <MdSupport />, path: "/mom-support" },
-    { name: "Travel & Outdoor", icon: <FaSuitcase />, path: "/travel-outdoor" }
+    { name: "Baby Essentials", icon: <FaBaby />, path: "/category/Baby Essentials" },
+    { name: "Health & Hygiene", icon: <MdHealthAndSafety />, path: "/category/Health & Hygiene" },
+    { name: "Toys & Education", icon: <FaChild />, path: "/category/Toys & Education" },
+    { name: "Clothing", icon: <BsPerson />, path: "/category/clothing" },
+    { name: "Nursery & Home", icon: <FaHome />, path: "/category/Nursery & Home" },
+    { name: "Feeding & Nursing", icon: <FaUtensils />, path: "/category/Feeding & Nursing" },
+    { name: "Mom's Support", icon: <MdSupport />, path: "/category/Mom's Support" },
+    { name: "Travel & Outdoor", icon: <FaSuitcase />, path: "/category/Travel & Outdoor" }
   ];
 
   return (

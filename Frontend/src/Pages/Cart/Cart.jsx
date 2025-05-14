@@ -12,6 +12,7 @@ import { IoIosArrowUp } from "react-icons/io";
 
 function Cart() {
   const { state: { basket, user }, dispatch } = useAuth();
+  console.log(basket[0]?.price)
   const total = basket.reduce(
     (amount, item) => item.price * item.amount + amount,
     0

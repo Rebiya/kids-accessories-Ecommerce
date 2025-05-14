@@ -108,8 +108,23 @@ export const ProductService = {
       }
       return false;
     }
-  },
+},
 
+// Get products by category
+async getProductsByCategory(categoryName) {
+  try {
+    const response = await api.get(`/products/category/${categoryName}`);
+    if (response.data.success && response.data.data) {
+      return response.data.data;
+    }
+    toast.info(response.data.message || 'No products in this category');
+    return [];
+  } catch (error) {
+    console.error(`Error fetching products for ${categoryName}:`, error);
+    toast.error('Failed to fetch category products');
+    return [];
+  }
+},
   // Search products
   async searchProducts(query) {
     try {

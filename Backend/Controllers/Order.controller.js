@@ -1,11 +1,21 @@
 const orderService = require("../Services/Order.service");
 
+// In your Order.controller.js
 exports.createOrder = async (req, res) => {
   try {
-    const newOrder = await orderService.createOrder(req.body);
-    res.status(201).json(newOrder);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.log('Incoming order data:', req.body); // Log incoming data
+    const result = await orderService.createOrder(req.body);
+    res.status(200).json(result);
+  } catch (error) {
+    console.error('Controller Error:', {
+      message: error.message,
+      stack: error.stack,
+      input: req.body
+    });
+    res.status(500).json({ 
+      error: error.message,
+      details: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
   }
 };
 

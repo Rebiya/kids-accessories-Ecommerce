@@ -1,16 +1,23 @@
 import React from "react";
 import { FadeLoader } from "react-spinners";
+
 const Loader = () => {
   return (
     <div
       style={{
-        display: 'flex',
+        display: "flex",
+        flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
-        height: "50vh",
+        height: "60vh", 
+        width: "100vw",
+        position: "fixed", 
+        top: 0,
+        left: 0,
+        zIndex: 1000, 
       }}
     >
-      <FadeLoader color="#036444" />
+      <FadeLoader color="#F9B02E" />
     </div>
   );
 };

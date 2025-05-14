@@ -34,6 +34,23 @@ async function getProductById(id) {
   };
 }
 
+async function getProductByCategory(categoryName) {
+  const sql = `
+    SELECT p.*, c.category_name 
+    FROM Products p
+    JOIN Category c ON p.category_id = c.ID
+    WHERE c.category_name = ?
+  `;
+  const products = await query(sql, [categoryName]);
+  return {
+    success: products.length > 0,
+    data: products,
+    message: products.length > 0 
+      ? 'Products retrieved successfully' 
+      : 'No products found in this category'
+  };
+}
+
 async function createProduct(productData) {
   // Step 1: Get category_id from category_name
   const categorySql = `SELECT id FROM Category WHERE category_name = ?`;
@@ -124,5 +141,6 @@ module.exports = {
   getProductById,
   createProduct,
   updateProduct,
-  deleteProduct
+  deleteProduct,
+  getProductByCategory
 };

@@ -18,6 +18,16 @@ async function getProduct(req, res, next) {
   }
 }
 
+//controller for getting products by category
+async function getProductByCategory(req, res, next) {
+  try {
+    const result = await productService.getProductByCategory(req.params.categoryName);
+    res.status(result.success ? 200 : 404).json(result);
+  } catch (error) {
+    next(error);
+  }
+}
+
 async function createProduct(req, res, next) {
   try {
     const result = await productService.createProduct(req.body);
@@ -51,5 +61,6 @@ module.exports = {
   getProduct,
   createProduct,
   updateProduct,
-  deleteProduct
+  deleteProduct,
+  getProductByCategory
 };
