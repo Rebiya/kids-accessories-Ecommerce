@@ -6,6 +6,12 @@
   overflow: hidden;
 }
 
+.CarouselEffect img {
+  width: 1350px;
+  height: 530px;
+  object-fit: cover; /* This will ensure the image covers the area while maintaining aspect ratio */
+}
+
 .fade {
   position: absolute;
   bottom: 0;
@@ -24,4 +30,15 @@
   width: 100%;
   height: 100%;
   background: linear-gradient(to top, white, rgba(0, 0, 0, 0));
+}
+.CarouselEffect .imageContainer {
+  width: 1350px;
+  height: 530px;
+  overflow: hidden;
+}
+
+.CarouselEffect .imageContainer img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }

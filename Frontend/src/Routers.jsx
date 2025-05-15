@@ -20,6 +20,8 @@ import Unauthorized from "./Components/Unauthorized/Unauthorized";
 import Support from "./Pages/Support/Support";
 import MyAccount from "./Pages/MyAccount/MyAccount";
 import WelcomeDashboard from "./Components/Admin/WelcomeDashboard";
+import SearchPage from "./Pages/Search/Search";
+import CategoriesPage from "./Pages/CategorySlider/CategorySlider";
 
 const stripePromise = loadStripe(
   "pk_test_51QTVpPA3g8fQRAS3vKHatPJBiP7avo3wdXeTS417I8eXaxIzevZYFIwMZUcheDTzoEVZvdo5HgX9Go5J4OnHuigw003BMQpUEt"
@@ -38,6 +40,8 @@ const Routers = () => {
         <Route path="/category/:category" element={<Results />} />
         <Route path="/products/:id" element={<ProductDetails />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
+        <Route path="/search" element={<SearchPage />} />
+        <Route path="/category" element={<CategoriesPage />} />
 
         {/* User Routes (role_id 1) */}
         <Route

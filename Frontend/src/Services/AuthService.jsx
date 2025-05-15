@@ -87,10 +87,12 @@ export const logout = async () => {
 // Token validation (existing)
 export const validateToken = (token) => {
   try {
+    if (!token) return false;
+    
     const decoded = jwtDecode(token);
-    const currentTime = Date.now() / 1000;
+    const currentTime = Date.now() / 1000; // Convert to seconds (not 10000)
+    
     return decoded.exp > currentTime;
   } catch (error) {
     return false;
-  }
-};
+  }  }
