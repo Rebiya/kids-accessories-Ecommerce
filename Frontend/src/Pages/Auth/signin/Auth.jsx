@@ -13,17 +13,22 @@ const Auth = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  setError('');
 
-    try {
-      await login(email, password);
-      navigate(location.state?.from || '/', { replace: true });
-    } catch (err) {
-      setError(err.message);
+  try {
+    const response = await login(email, password);
+    // Check role and redirect immediately
+    if (response.user.role_id === 3) {
+      navigate("/admin/welcome", { replace: true });
+    } else {
+      navigate("/", { replace: true });
     }
-  };
+  } catch (err) {
+    setError(err.message);
+  }
+};
 
   return (
     <section className={styles.authContainer}>

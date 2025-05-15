@@ -10,33 +10,40 @@ import 'react-toastify/dist/ReactToastify.css';
 function App() {
   const { state, dispatch } = useAuth();
 
-  useEffect(() => {
-    const checkAuthState = () => {
-      const token = localStorage.getItem("token");
-      const userData = JSON.parse(localStorage.getItem("user"));
+ useEffect(() => {
+  const checkAuthState = () => {
+    const token = localStorage.getItem("token");
+    const userData = JSON.parse(localStorage.getItem("user"));
 
-      if (token && validateToken(token)) {
-        dispatch({
-          type: type.SET_USER,
-          user: userData
-        });
-      } else {
-        dispatch({
-          type: type.SET_USER,
-          user: null
-        });
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
+    if (token && validateToken(token)) {
+      dispatch({
+        type: type.SET_USER,
+        user: userData
+      });
+      
+      // Add immediate redirection logic for all roles
+      if (userData?.role_id === 3 && !window.location.pathname.startsWith('/admin')) {
+        window.location.href = "/admin/welcome";
+      } else if (userData?.role_id !== 3 && window.location.pathname.startsWith('/admin')) {
+        window.location.href = "/";
       }
-    };
+    } else {
+      dispatch({
+        type: type.SET_USER,
+        user: null
+      });
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+    }
+  };
 
-    checkAuthState();
-  }, [dispatch]);
+  checkAuthState();
+}, [dispatch]);
 
   return (
     <>
       <Routers />
-          <ToastContainer
+      <ToastContainer
         position="top-right"
         autoClose={5000}
         hideProgressBar={false}
