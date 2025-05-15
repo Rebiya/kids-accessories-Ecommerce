@@ -7,7 +7,6 @@ const userController = require("../Controllers/user.controller");
 router.get("/users", userController.getAllUsers);
 router.get(
   "/users/:uuid",
-  authMiddleware([2, 3]),
   userController.getUserByID
 );
 router.put(
@@ -17,7 +16,7 @@ router.put(
 );
 router.delete(
   "/users/:uuid",
-  authMiddleware([3]),
+  authMiddleware([2,3]),
   userController.deleteUserByID
 );
 router.get(
@@ -25,6 +24,6 @@ router.get(
   authMiddleware([2,3]),
   userController.getUsersByRole
 );
-router.post("/users",  authMiddleware([3]), userController.createUser);
+router.post("/users",  authMiddleware([2,3]), userController.createUser);
 
 module.exports = router;

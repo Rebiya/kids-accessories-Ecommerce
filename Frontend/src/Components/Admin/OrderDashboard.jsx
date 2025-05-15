@@ -2,30 +2,39 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { FiSearch, FiEye, FiDollarSign, FiCalendar, FiUser, FiPackage, FiChevronDown, FiChevronUp, FiX } from 'react-icons/fi';
+import { 
+  FiSearch, FiEye, FiDollarSign, FiCalendar, FiUser, 
+  FiPackage, FiChevronDown, FiChevronUp, FiX, FiRefreshCw 
+} from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const API_BASE_URL = 'http://localhost:3000/api';
 
 const OrderDashboard = () => {
   const [orders, setOrders] = useState([]);
-  const [users, setUsers] = useState({}); // Store users by ID
+  const [users, setUsers] = useState({});
+  const [products, setProducts] = useState({});
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [expandedOrder, setExpandedOrder] = useState(null);
+  const [updatingStatus, setUpdatingStatus] = useState(null);
 
-  // Status colors
+  // Status colors and options
   const statusColors = {
     pending: 'bg-yellow-100 text-yellow-800',
-    processing: 'bg-blue-100 text-blue-800',
-    shipped: 'bg-purple-100 text-purple-800',
     delivered: 'bg-green-100 text-green-800',
     cancelled: 'bg-red-100 text-red-800'
   };
 
-  // Fetch all orders and associated users
-  const fetchOrdersAndUsers = async () => {
+  const statusOptions = [
+    { value: 'pending', label: 'Pending' },
+    { value: 'delivered', label: 'Delivered' },
+    { value: 'cancelled', label: 'Cancelled' }
+  ];
+
+  // Fetch all orders, users, and products
+  const fetchOrdersAndRelatedData = async () => {
     try {
       setLoading(true);
       
@@ -36,11 +45,17 @@ const OrderDashboard = () => {
       // Get unique user IDs from orders
       const userIds = [...new Set(ordersData.map(order => order.user_id))];
       
+      // Get unique product IDs from orders
+      const productIds = [...new Set(ordersData.map(order => order.product_id))];
+      
       // Fetch user data for all unique user IDs
       const usersResponse = await Promise.all(
         userIds.map(userId => 
           axios.get(`${API_BASE_URL}/users/${userId}`)
-            .then(res => res.data)
+            .then(res => {
+              console.log("User response:", res.data); // Debug log
+              return res.data.user; // Access nested user object
+            })
             .catch(error => {
               console.error(`Failed to fetch user ${userId}:`, error);
               return null;
@@ -48,45 +63,102 @@ const OrderDashboard = () => {
         )
       );
       
+      // Fetch product data for all unique product IDs
+      const productsResponse = await Promise.all(
+        productIds.map(productId => 
+          axios.get(`${API_BASE_URL}/product/${productId}`)
+            .then(res => res.data.data) // Access nested data object
+            .catch(error => {
+              console.error(`Failed to fetch product ${productId}:`, error);
+              return null;
+            })
+        )
+      );
+      
       // Create users map
-      const usersMap = {};
-      usersResponse.forEach(user => {
-        if (user) {
-          usersMap[user.ID] = user;
+    // Create users map using user_id format (lowercase)
+// After fetching usersResponse
+const usersMap = {};
+usersResponse.forEach(user => {
+  if (user) {
+    usersMap[user.ID.toLowerCase()] = user;  // normalize to lowercase
+  }
+});
+
+
+    
+
+      
+      // Create products map
+      const productsMap = {};
+      productsResponse.forEach(product => {
+        if (product) {
+          productsMap[product.ID] = product;
         }
       });
       
       setOrders(ordersData);
       setUsers(usersMap);
+      setProducts(productsMap);
     } catch (error) {
       toast.error('Failed to fetch data: ' + error.message);
       setOrders([]);
       setUsers({});
+      setProducts({});
     } finally {
       setLoading(false);
     }
   };
 
+  // Update order status
+  const updateOrderStatus = async (orderId, newStatus) => {
+    try {
+      setUpdatingStatus(orderId);
+      const response = await axios.put(`${API_BASE_URL}/order/${orderId}/status`, {
+        status: newStatus
+      });
+      
+      if (response.data) {
+        setOrders(prevOrders => 
+          prevOrders.map(order => 
+            order.id === orderId ? { ...order, status: newStatus } : order
+          )
+        );
+        toast.success(`Order status updated to ${newStatus}`);
+      }
+    } catch (error) {
+      toast.error(`Failed to update status: ${error.response?.data?.error || error.message}`);
+    } finally {
+      setUpdatingStatus(null);
+    }
+  };
+
   useEffect(() => {
-    fetchOrdersAndUsers();
+    fetchOrdersAndRelatedData();
   }, []);
 
-  // Filter orders based on search term with safety checks
+  // Filter orders based on search term
   const filteredOrders = orders.filter(order => {
-    const orderId = order?.ID?.toString().toLowerCase() || '';
-    const user = users[order.user_id] || {};
+    const orderId = order?.id?.toString().toLowerCase() || '';
+    const user = users[order.user_id]
+    || {};
     const userEmail = user?.email?.toLowerCase() || '';
+    const userName = `${user?.first_name || ''} ${user?.last_name || ''}`.toLowerCase();
     const status = order?.status?.toLowerCase() || '';
+    const product = products[order.product_id] || {};
+    const productTitle = product?.title?.toLowerCase() || '';
     const searchTermLower = searchTerm.toLowerCase();
 
     return (
       orderId.includes(searchTermLower) ||
       userEmail.includes(searchTermLower) ||
-      status.includes(searchTermLower)
+      userName.includes(searchTermLower) ||
+      status.includes(searchTermLower) ||
+      productTitle.includes(searchTermLower)
     );
   });
 
-  // Format date with safety check
+  // Format date
   const formatDate = (dateString) => {
     if (!dateString) return 'N/A';
     try {
@@ -97,28 +169,56 @@ const OrderDashboard = () => {
     }
   };
 
-  // Calculate total price with safety checks
-  const calculateTotal = (items) => {
-    if (!Array.isArray(items)) return '0.00';
-    return items.reduce((sum, item) => {
-      const price = parseFloat(item?.price) || 0;
-      const quantity = parseInt(item?.quantity) || 0;
-      return sum + (price * quantity);
-    }, 0).toFixed(2);
+
+ // Get user by ID
+ const getUserById = (userId) => {
+  if (!userId) {
+    return {
+      ID: userId,
+      email: 'Unknown user',
+      phone_number: 'N/A',
+      first_name: 'Unknown',
+      last_name: 'User'
+    };
+  }
+  const user = users[userId.toLowerCase()];
+  if (user) {
+    return {
+      ID: user.ID,
+      email: user.email,
+      phone_number: user.phone_number,
+      first_name: user.first_name,
+      last_name: user.last_name
+    };
+  }
+  return {
+    ID: userId,
+    email: 'Unknown user',
+    phone_number: 'N/A',
+    first_name: 'Unknown',
+    last_name: 'User'
+  };
+};
+
+  // Get product by ID
+  const getProductById = (productId) => {
+    const product = products[productId];
+    return product ? {
+      ID: product.ID,
+      title: product.title,
+      price: product.price,
+      description: product.description,
+      image: product.image
+    } : {
+      ID: productId,
+      title: 'Unknown product',
+      price: 'N/A'
+    };
   };
 
   // Toggle order details
   const toggleOrderDetails = (orderId) => {
     setExpandedOrder(expandedOrder === orderId ? null : orderId);
-  };
-
-  // Get user by ID
-  const getUserById = (userId) => {
-    return users[userId] || {
-      ID: userId,
-      email: 'Unknown user',
-      phone_number: 'N/A'
-    };
   };
 
   return (
@@ -144,6 +244,13 @@ const OrderDashboard = () => {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
+            <button
+              onClick={fetchOrdersAndRelatedData}
+              className="flex items-center justify-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors"
+            >
+              <FiRefreshCw className="mr-2" />
+              Refresh
+            </button>
           </div>
         </div>
 
@@ -164,27 +271,30 @@ const OrderDashboard = () => {
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order ID</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
                     <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {filteredOrders.map((order) => {
                     const user = getUserById(order.user_id);
+                    const product = getProductById(order.product_id);
+                    
                     return (
-                      <React.Fragment key={order.ID || Math.random().toString(36).substr(2, 9)}>
+                      <React.Fragment key={order.id || Math.random().toString(36).substr(2, 9)}>
                         <motion.tr 
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
                           transition={{ duration: 0.3 }}
                           className="hover:bg-gray-50 cursor-pointer"
-                          onClick={() => toggleOrderDetails(order.ID)}
+                          onClick={() => toggleOrderDetails(order.id)}
                         >
                           <td className="px-6 py-4 whitespace-nowrap">
                             <div className="text-sm font-medium text-gray-900">
-                              {order.ID ? `#${order.ID.toString().slice(-6)}` : 'N/A'}
+                              {order.id ? `#${order.id.toString().slice(-6)}` : 'N/A'}
                             </div>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
@@ -194,7 +304,7 @@ const OrderDashboard = () => {
                               </div>
                               <div className="ml-4">
                                 <div className="text-sm font-medium text-gray-900">
-                                  {user.email.split('@')[0] || 'Guest'}
+                                  {`${user.first_name || ''} ${user.last_name || ''}`.trim() || 'Guest'}
                                 </div>
                                 <div className="text-sm text-gray-500">
                                   {user.email || 'No email'}
@@ -203,21 +313,45 @@ const OrderDashboard = () => {
                             </div>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm text-gray-900">
-                              {formatDate(order.order_date)}
+                            <div className="text-sm font-medium text-gray-900">
+                              {product.title || 'Unknown product'}
+                            </div>
+                            <div className="text-sm text-gray-500">
+                              ${product.price || 'N/A'}
                             </div>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <span className={`px-2 py-1 text-xs font-medium rounded-full ${
-                              statusColors[order.status] || 'bg-gray-100 text-gray-800'
-                            }`}>
-                              {order.status ? order.status.charAt(0).toUpperCase() + order.status.slice(1) : 'Unknown'}
-                            </span>
+                            <div className="text-sm text-gray-900">
+                              {formatDate(order.created_at)}
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <select
+                              value={order.status || 'pending'}
+                              onChange={(e) => updateOrderStatus(order.id, e.target.value)}
+                              disabled={updatingStatus === order.id}
+                              className={`px-2 py-1 text-xs font-medium rounded-full ${
+                                statusColors[order.status] || 'bg-gray-100 text-gray-800'
+                              } ${updatingStatus === order.id ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                            >
+                              {statusOptions.map(option => (
+                                <option 
+                                  key={option.value} 
+                                  value={option.value}
+                                  className="bg-white text-gray-800"
+                                >
+                                  {option.label}
+                                </option>
+                              ))}
+                            </select>
+                            {updatingStatus === order.id && (
+                              <span className="ml-2 text-xs text-gray-500">Updating...</span>
+                            )}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <div className="text-sm font-medium text-gray-900 flex items-center">
                               <FiDollarSign className="mr-1" />
-                              {calculateTotal(order.items || [])}
+                              {order.amount || '0.00'}
                             </div>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
@@ -228,12 +362,12 @@ const OrderDashboard = () => {
                                 whileTap={{ scale: 0.9 }}
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  setSelectedOrder({...order, userDetails: user});
+                                  setSelectedOrder({...order, userDetails: user, productDetails: product});
                                 }}
                               >
                                 <FiEye />
                               </motion.button>
-                              {expandedOrder === order.ID ? (
+                              {expandedOrder === order.id ? (
                                 <FiChevronUp className="text-gray-400" />
                               ) : (
                                 <FiChevronDown className="text-gray-400" />
@@ -244,7 +378,7 @@ const OrderDashboard = () => {
 
                         {/* Expanded Order Details */}
                         <AnimatePresence>
-                          {expandedOrder === order.ID && (
+                          {expandedOrder === order.id && (
                             <motion.tr
                               initial={{ opacity: 0, height: 0 }}
                               animate={{ opacity: 1, height: 'auto' }}
@@ -252,7 +386,7 @@ const OrderDashboard = () => {
                               transition={{ duration: 0.3 }}
                               className="bg-gray-50"
                             >
-                              <td colSpan="6" className="px-6 py-4">
+                              <td colSpan="7" className="px-6 py-4">
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                   <div className="bg-white p-4 rounded-lg shadow-xs border border-gray-200">
                                     <h3 className="text-sm font-medium text-gray-900 mb-2 flex items-center">
@@ -260,19 +394,49 @@ const OrderDashboard = () => {
                                       Customer Details
                                     </h3>
                                     <div className="space-y-1 text-sm text-gray-600">
-                                      <p>{user.email || 'Guest'}</p>
-                                      <p>{user.phone_number || 'No phone'}</p>
-                                      {order.shippingAddress && (
-                                        <>
-                                          <p>{order.shippingAddress.street || 'N/A'}</p>
-                                          <p>{order.shippingAddress.city || 'N/A'}, {order.shippingAddress.postalCode || 'N/A'}</p>
-                                          <p>{order.shippingAddress.country || 'N/A'}</p>
-                                        </>
-                                      )}
+                                      <p><span className="font-medium">Name:</span> {`${user.first_name || ''} ${user.last_name || ''}`.trim() || 'Guest'}</p>
+                                      <p><span className="font-medium">Email:</span> {user.email || 'No email'}</p>
+                                      <p><span className="font-medium">Phone:</span> {user.phone_number || 'No phone'}</p>
                                     </div>
                                   </div>
 
-                                  {/* ... rest of the expanded details remains the same ... */}
+                                  <div className="bg-white p-4 rounded-lg shadow-xs border border-gray-200">
+                                    <h3 className="text-sm font-medium text-gray-900 mb-2 flex items-center">
+                                      <FiPackage className="mr-2" />
+                                      Order Details
+                                    </h3>
+                                    <div className="space-y-1 text-sm text-gray-600">
+                                      <p><span className="font-medium">Order ID:</span> {order.id}</p>
+                                      <p><span className="font-medium">Date:</span> {formatDate(order.created_at)}</p>
+                                      <p><span className="font-medium">Status:</span> 
+                                        <span className={`ml-1 px-2 py-1 rounded-full text-xs ${
+                                          statusColors[order.status] || 'bg-gray-100 text-gray-800'
+                                        }`}>
+                                          {order.status ? order.status.charAt(0).toUpperCase() + order.status.slice(1) : 'Unknown'}
+                                        </span>
+                                      </p>
+                                      <p><span className="font-medium">Payment ID:</span> {order.stripe_payment_id || 'N/A'}</p>
+                                    </div>
+                                  </div>
+
+                                  <div className="bg-white p-4 rounded-lg shadow-xs border border-gray-200">
+                                    <h3 className="text-sm font-medium text-gray-900 mb-2 flex items-center">
+                                      <FiDollarSign className="mr-2" />
+                                      Product & Payment
+                                    </h3>
+                                    <div className="space-y-1 text-sm text-gray-600">
+                                      <p><span className="font-medium">Product:</span> {product.title || 'Unknown'}</p>
+                                      {product.image && (
+                                        <img 
+                                          src={product.image} 
+                                          alt={product.title} 
+                                          className="w-16 h-16 object-cover rounded mt-1"
+                                        />
+                                      )}
+                                      <p><span className="font-medium">Price:</span> ${product.price || 'N/A'}</p>
+                                      <p><span className="font-medium">Amount Paid:</span> ${order.amount || '0.00'}</p>
+                                    </div>
+                                  </div>
                                 </div>
                               </td>
                             </motion.tr>
@@ -305,7 +469,7 @@ const OrderDashboard = () => {
             >
               <div className="p-4 border-b border-gray-200 flex justify-between items-center sticky top-0 bg-white z-10">
                 <h3 className="text-lg font-semibold text-gray-800">
-                  Order Details (#{selectedOrder.ID ? selectedOrder.ID.toString().slice(-6) : 'N/A'})
+                  Order Details (#{selectedOrder.id ? selectedOrder.id.toString().slice(-6) : 'N/A'})
                 </h3>
                 <button
                   onClick={() => setSelectedOrder(null)}
@@ -323,12 +487,64 @@ const OrderDashboard = () => {
                       Customer Information
                     </h4>
                     <div className="space-y-2 text-sm text-gray-600">
-                      <p><span className="font-medium">Email:</span> {selectedOrder.userDetails?.email || 'Guest'}</p>
+                      <p><span className="font-medium">Name:</span> {`${selectedOrder.userDetails?.first_name || ''} ${selectedOrder.userDetails?.last_name || ''}`.trim() || 'Guest'}</p>
+                      <p><span className="font-medium">Email:</span> {selectedOrder.userDetails?.email || 'No email'}</p>
                       <p><span className="font-medium">Phone:</span> {selectedOrder.userDetails?.phone_number || 'N/A'}</p>
                     </div>
                   </div>
 
-                  {/* ... rest of the modal remains similar with adjustments for the new data structure ... */}
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <h4 className="text-sm font-medium text-gray-900 mb-3 flex items-center">
+                      <FiPackage className="mr-2" />
+                      Order Information
+                    </h4>
+                    <div className="space-y-2 text-sm text-gray-600">
+                      <p><span className="font-medium">Order ID:</span> {selectedOrder.id}</p>
+                      <p><span className="font-medium">Date:</span> {formatDate(selectedOrder.created_at)}</p>
+                      <p><span className="font-medium">Status:</span> 
+                        <select
+                          value={selectedOrder.status || 'pending'}
+                          onChange={(e) => {
+                            updateOrderStatus(selectedOrder.id, e.target.value);
+                            setSelectedOrder(prev => ({...prev, status: e.target.value}));
+                          }}
+                          disabled={updatingStatus === selectedOrder.id}
+                          className={`ml-2 px-2 py-1 rounded-full text-xs ${
+                            statusColors[selectedOrder.status] || 'bg-gray-100 text-gray-800'
+                          } ${updatingStatus === selectedOrder.id ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                        >
+                          {statusOptions.map(option => (
+                            <option 
+                              key={option.value} 
+                              value={option.value}
+                              className="bg-white text-gray-800"
+                            >
+                              {option.label}
+                            </option>
+                          ))}
+                        </select>
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <h4 className="text-sm font-medium text-gray-900 mb-3 flex items-center">
+                      <FiDollarSign className="mr-2" />
+                      Product & Payment
+                    </h4>
+                    <div className="space-y-2 text-sm text-gray-600">
+                      <p><span className="font-medium">Product:</span> {selectedOrder.productDetails?.title || 'Unknown'}</p>
+                      {selectedOrder.productDetails?.image && (
+                        <img 
+                          src={selectedOrder.productDetails.image} 
+                          alt={selectedOrder.productDetails.title} 
+                          className="w-16 h-16 object-cover rounded mt-1"
+                        />
+                      )}
+                      <p><span className="font-medium">Price:</span> ${selectedOrder.productDetails?.price || 'N/A'}</p>
+                      <p><span className="font-medium">Amount Paid:</span> ${selectedOrder.amount || '0.00'}</p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </motion.div>

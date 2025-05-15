@@ -2,9 +2,41 @@ const db = require("../Config/db.config");
 
 // Get all Users
 async function getAllUsers() {
-  const query = `SELECT * FROM Users INNER JOIN Role ON Users.role_id = Role.ID`;
-  return await db.query(query);
+  const query = `
+    SELECT 
+      Users.ID AS ID, 
+      Users.email, 
+      Users.phone_number, 
+      Users.first_name, 
+      Users.last_name,
+      Users.role_id,
+      Users.created_at,
+      Role.name AS role_name
+    FROM Users 
+    INNER JOIN Role ON Users.role_id = Role.ID
+  `;
+
+  // Run query without destructuring so you get the full result
+  const result = await db.query(query);
+
+  // Depending on your db lib, result might be [rows, fields] or just rows
+  // Let's handle both:
+
+  let rows;
+
+  if (Array.isArray(result)) {
+    // If result is like [rows, fields], take first element
+    rows = Array.isArray(result[0]) ? result[0] : result;
+  } else {
+    rows = [];
+  }
+
+  // Ensure rows is always an array
+  if (!Array.isArray(rows)) rows = [];
+
+  return rows;
 }
+
 
 // Create User
 async function createUser(User) {

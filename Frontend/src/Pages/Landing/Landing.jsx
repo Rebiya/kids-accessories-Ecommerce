@@ -20,7 +20,9 @@ const Landing = () => {
         <Product />
       </Layout>
 
-
+<WelcomeDashboard/>
+<CategoryDashboard/>
+<AnalyticsDashboard/>
       <footer />
 
 

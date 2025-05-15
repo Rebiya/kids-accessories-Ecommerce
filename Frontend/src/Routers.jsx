@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import LandingPage from "./Pages/Landing/Landing";
 import AuthPage from "./Pages/Auth/signin/Auth";
 import OrdersPage from "./Pages/Orders/Orders";
@@ -11,6 +11,7 @@ import AnalyticsDashboard from "./Components/Admin/AnalyticsDashboard";
 import CategoryDashboard from "./Components/Admin/CategoryDashboard";
 import OrderDashboard from "./Components/Admin/OrderDashboard";
 import UserDashboard from "./Components/Admin/UserDashboard";
+import AdminLayout from "./Components/Admin/AdminLayout";
 
 import ProductDetails from "./Pages/ProductDetails/ProductDetails";
 import { Elements } from "@stripe/react-stripe-js";
@@ -20,6 +21,7 @@ import Register from "./Pages/Auth/signup/Signup";
 import Unauthorized from "./Components/Unauthorized/Unauthorized";
 import Support from "./Pages/Support/Support";
 import MyAccount from "./Pages/MyAccount/MyAccount";
+import { useNavigate } from 'react-router-dom';
 const stripePromise = loadStripe(
   "pk_test_51QTVpPA3g8fQRAS3vKHatPJBiP7avo3wdXeTS417I8eXaxIzevZYFIwMZUcheDTzoEVZvdo5HgX9Go5J4OnHuigw003BMQpUEt"
 );
@@ -75,66 +77,20 @@ const Routers = () => {
         <Route path="/Category/:category" element={<Results />} />
         <Route path="/products/:id" element={<ProductDetails />} />
         <Route
-          path="/admin/product"
+          path="/admin"
           element={
-            <ProtectedRoute
-            allowedRoles={[2,3]}
-              msg={"you must log in to  access your orders "}
-              redirect={"/admin/product"}
-            >
-              <ProductDashboard/>
+            <ProtectedRoute allowedRoles={[2, 3]}>
+              <AdminLayout />
             </ProtectedRoute>
           }
-        />
-           <Route
-          path="/admin/order"
-          element={
-            <ProtectedRoute
-            allowedRoles={[2,3]}
-              msg={"you must log in to  access your orders "}
-              redirect={"/admin/orders"}
-            >
-              <OrderDashboard/>
-            </ProtectedRoute>
-          }
-        />
-            <Route
-          path="/admin/category"
-          element={
-            <ProtectedRoute
-            allowedRoles={[2,3]}
-              msg={"you must log in to  access your orders "}
-              redirect={"/admin/category"}
-            >
-              <CategoryDashboard/>
-            </ProtectedRoute>
-          }
-        />
-              <Route
-          path="/admin/user"
-          element={
-            <ProtectedRoute
-            allowedRoles={[2,3]}
-              msg={"you must log in to  access your orders "}
-              redirect={"/admin/user"}
-            >
-              <UserDashboard/>
-            </ProtectedRoute>
-          }
-        />
-                <Route
-          path="/admin/analytics"
-          element={
-            <ProtectedRoute
-            allowedRoles={[2,3]}
-              msg={"you must log in to  access your orders "}
-              redirect={"/admin/analytics"}
-            >
-              <AnalyticsDashboard/>
-            </ProtectedRoute>
-          }
-        />
-
+        >
+          <Route path="product" element={<ProductDashboard />} />
+          <Route path="order" element={<OrderDashboard />} />
+          <Route path="category" element={<CategoryDashboard />} />
+          <Route path="user" element={<UserDashboard />} />
+          <Route path="analytics" element={<AnalyticsDashboard />} />
+          <Route index element={<Navigate to="product" replace />} />
+        </Route>
       </Routes>
     </Router>
   );

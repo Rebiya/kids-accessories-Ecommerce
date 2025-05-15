@@ -37,6 +37,27 @@ exports.getOrdersByUserId = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+exports.updateOrderStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+    
+    // Validate the status
+    const validStatuses = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
+    if (!validStatuses.includes(status)) {
+      return res.status(400).json({ error: "Invalid status value" });
+    }
+
+    const updatedOrder = await orderService.updateOrderStatus(id, status);
+    if (!updatedOrder) {
+      return res.status(404).json({ error: "Order not found" });
+    }
+    
+    res.json(updatedOrder);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
 
 
 
