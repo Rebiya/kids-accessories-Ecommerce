@@ -62,6 +62,7 @@ async function getOrderById(id) {
   return rows[0];
 }
 
+
 //get orders by user id
 async function getOrdersByUserId(userId) {
   try {
@@ -132,11 +133,25 @@ async function getOrdersByUserId(userId) {
     console.error('Error fetching orders:', error);
     throw error;
   }
+
 }
 
+
+async function updateOrderStatus(orderId, newStatus) {
+  const sql = `UPDATE Orders SET status = ? WHERE id = ?`;
+  const result = await db.query(sql, [newStatus, orderId]);
+  
+  if (result.affectedRows === 0) {
+    return null;
+  }
+  
+  // Return the updated order
+  return await getOrderById(orderId);
+} 
 module.exports = {
   createOrder,
   getAllOrders,
   getOrderById,
   getOrdersByUserId,
+  updateOrderStatus
 };

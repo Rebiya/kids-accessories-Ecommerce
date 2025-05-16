@@ -6,11 +6,11 @@ import OrdersPage from "./Pages/Orders/Orders";
 import Payment from "./Pages/Payment/Payment";
 import CartPage from "./Pages/Cart/Cart";
 import Results from "./Pages/Results/Results";
-import ProductDashboard from "./Components/Admin/ProductDashboard";
-import AnalyticsDashboard from "./Components/Admin/AnalyticsDashboard";
-import CategoryDashboard from "./Components/Admin/CategoryDashboard";
-import OrderDashboard from "./Components/Admin/OrderDashboard";
-import UserDashboard from "./Components/Admin/UserDashboard";
+import ProductDashboard from "./Components/Admin/ProductDashBoard/ProductDashboard";
+import AnalyticsDashboard from "./Components/Admin/AnalyticsDashBoard/AnalyticsDashboard";
+import CategoryDashboard from "./Components/Admin/CategoryDashBoard/CategoryDashboard";
+import OrderDashboard from "./Components/Admin/OrderDashBoard/OrderDashboard";
+import UserDashboard from "./Components/Admin/UserDashBoard/UserDashboard";
 import ProductDetails from "./Pages/ProductDetails/ProductDetails";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
@@ -19,9 +19,11 @@ import Register from "./Pages/Auth/signup/Signup";
 import Unauthorized from "./Components/Unauthorized/Unauthorized";
 import Support from "./Pages/Support/Support";
 import MyAccount from "./Pages/MyAccount/MyAccount";
-import WelcomeDashboard from "./Components/Admin/WelcomeDashboard";
+import WelcomeDashboard from "./Components/Admin/WelcomeDashBoard/WelcomeDashboard";
 import SearchPage from "./Pages/Search/Search";
 import CategoriesPage from "./Pages/CategorySlider/CategorySlider";
+import AdminLayout from "./Components/Admin/AdminLayout/AdminLayout";
+import { Navigate } from "react-router-dom";
 
 const stripePromise = loadStripe(
   "pk_test_51QTVpPA3g8fQRAS3vKHatPJBiP7avo3wdXeTS417I8eXaxIzevZYFIwMZUcheDTzoEVZvdo5HgX9Go5J4OnHuigw003BMQpUEt"
@@ -52,14 +54,15 @@ const Routers = () => {
             </ProtectedRoute>
           }
         />
-        <Route
-          path="/orders"
-          element={
-            <ProtectedRoute allowedRoles={[1,3]}>
-              <OrdersPage />admin/welcome
-            </ProtectedRoute>
-          }
-        />
+      <Route
+  path="/orders"
+  element={
+    <ProtectedRoute allowedRoles={[1,3]}>
+      <OrdersPage />
+    </ProtectedRoute>
+  }
+/>
+
         <Route
           path="/payment"
           element={
@@ -72,14 +75,7 @@ const Routers = () => {
         />
 
         {/* Employee & Admin Routes (role_id 2 & 3) */}
-        <Route
-          path="/admin/product"
-          element={
-            <ProtectedRoute allowedRoles={[2, 3]}>
-              <ProductDashboard />
-            </ProtectedRoute>
-          }
-        />
+       
         <Route
           path="/admin/welcome"
           element={
@@ -88,38 +84,23 @@ const Routers = () => {
             </ProtectedRoute>
           }
         />
-        <Route
-          path="/admin/order"
-          element={
-            <ProtectedRoute allowedRoles={[2, 3]}>
-              <OrderDashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin/category"
-          element={
-            <ProtectedRoute allowedRoles={[2, 3]}>
-              <CategoryDashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin/user"
-          element={
-            <ProtectedRoute allowedRoles={[3]}> {/* Admin only */}
-              <UserDashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin/analytics"
-          element={
-            <ProtectedRoute allowedRoles={[3]}> {/* Admin only */}
-              <AnalyticsDashboard />
-            </ProtectedRoute>
-          }
-        />
+        
+       <Route
+  path="/admin"
+  element={
+    <ProtectedRoute allowedRoles={[2, 3]}>
+      <AdminLayout />
+    </ProtectedRoute>
+  }
+>
+  <Route path="product" element={<ProductDashboard />} />
+  <Route path="order" element={<OrderDashboard />} />
+  <Route path="category" element={<CategoryDashboard />} />
+  <Route path="user" element={<UserDashboard />} />
+  <Route path="analytics" element={<AnalyticsDashboard />} />
+  <Route index element={<Navigate to="product" replace />} />
+</Route>
+
       </Routes>
     </Router>
   );

@@ -48,5 +48,16 @@ exports.getOrdersByUserId = async (req, res) => {
   }
 };
 
+exports.updateOrderStatus = async (req, res) => {
+  try {
+    const { orderId, newStatus } = req.body;
+    const updatedOrder = await orderService.updateOrderStatus(orderId, newStatus);
+    if (!updatedOrder) return res.status(404).json({ error: "Order not found" });
+    res.json(updatedOrder);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
 
 

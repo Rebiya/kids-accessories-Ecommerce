@@ -5,12 +5,12 @@ import Product from "../../Components/Product/Product";
 import Category from "../../Components/Category/Category";
 
 import footer from "../../Components/Footer/Footer";
-import UserDashboard from "../../Components/Admin/UserDashboard";
-import CategoryDashboard from "../../Components/Admin/CategoryDashboard";
-import ProductDashboard from "../../Components/Admin/ProductDashboard";
-import OrderDashboard from "../../Components/Admin/OrderDashboard";
-import AnalyticsDashboard from "../../Components/Admin/AnalyticsDashboard";
-import WelcomeDashboard from "../../Components/Admin/WelcomeDashboard";
+import UserDashboard from "../../Components/Admin/UserDashBoard/UserDashboard";
+import CategoryDashboard from "../../Components/Admin/CategoryDashBoard/CategoryDashboard";
+import ProductDashboard from "../../Components/Admin/ProductDashBoard/ProductDashboard";
+import OrderDashboard from "../../Components/Admin/OrderDashBoard/OrderDashboard";
+import AnalyticsDashboard from "../../Components/Admin/AnalyticsDashBoard/AnalyticsDashboard";
+import WelcomeDashboard from "../../Components/Admin/WelcomeDashBoard/WelcomeDashboard";
 const Landing = () => {
   return (
     <div>

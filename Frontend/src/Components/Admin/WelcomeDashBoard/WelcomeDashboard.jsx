@@ -6,12 +6,12 @@ import {
 } from 'react-icons/fi';
 import { FaReact, FaChartLine, FaBoxOpen } from 'react-icons/fa';
 import { useNavigate, useLocation } from 'react-router-dom';
-import ProductDashboard from './ProductDashboard';
-import OrderDashboard from './OrderDashboard';
-import CategoryDashboard from './CategoryDashboard';
-import UserDashboard from './UserDashboard';
-import AnalyticsDashboard from './AnalyticsDashboard';
-import ProtectedRoute from "../ProtectedRoute/ProtectedRoute"
+import ProductDashboard from '../ProductDashBoard/ProductDashboard';
+import OrderDashboard from '../OrderDashBoard/OrderDashboard';
+import CategoryDashboard from '../CategoryDashBoard/CategoryDashboard';
+import UserDashboard from '../UserDashBoard/UserDashboard';
+import AnalyticsDashboard from '../AnalyticsDashBoard/AnalyticsDashboard';
+import ProtectedRoute from "../../ProtectedRoute/ProtectedRoute"
 
 const WelcomeDashboard = () => {
   const [isWelcome, setIsWelcome] = useState(true);

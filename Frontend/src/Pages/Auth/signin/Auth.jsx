@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../Components/DataProvider/DataProvider';
 import { ClipLoader } from 'react-spinners';
 import styles from './Auth.module.css';
-import img from '../../../assets/images/download.png';
+import img from '../../../assets/images/download_mask.png';
 
 const Auth = () => {
   const [email, setEmail] = useState('');

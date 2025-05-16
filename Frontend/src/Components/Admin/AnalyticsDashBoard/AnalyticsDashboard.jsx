@@ -1,16 +1,44 @@
+
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Bar, Line, Pie } from 'react-chartjs-2';
-import { 
-  FiUsers, 
-  FiShoppingCart, 
-  FiTrendingUp, 
+import {
+  FiUsers,
+  FiShoppingCart,
+  FiTrendingUp,
   FiCalendar,
   FiRefreshCw
 } from 'react-icons/fi';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { format, subDays, eachDayOfInterval, isSameDay } from 'date-fns';
+
+// Add these Chart.js registrations
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  PointElement,
+  LineElement,
+  ArcElement,
+  Title,
+  Tooltip,
+  Legend
+} from 'chart.js';
+
+// Register ChartJS components
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  PointElement,
+  LineElement,
+  ArcElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 const API_BASE_URL = 'http://localhost:3000/api';
 
@@ -35,14 +63,19 @@ const AnalyticsDashboard = () => {
     try {
       setLoading(true);
       setError(null);
-      
+
       // Fetch users and orders in parallel
       const [usersResponse, ordersResponse] = await Promise.all([
         axios.get(`${API_BASE_URL}/users`),
         axios.get(`${API_BASE_URL}/order`)
       ]);
 
-      const users = usersResponse.data || [];
+      // Convert single user response to array
+      const usersData = usersResponse.data.users;
+const users = Array.isArray(usersData) ? usersData : (usersData ? [usersData] : []);
+
+
+      // Orders is a direct array
       const orders = ordersResponse.data || [];
 
       // Process data for charts
@@ -55,7 +88,7 @@ const AnalyticsDashboard = () => {
       const usersByDay = daysInRange.map(day => ({
         date: day,
         count: users.filter(user => 
-          isSameDay(new Date(user.created_at || user.order_date), day)
+          user.created_at && isSameDay(new Date(user.created_at), day)
         ).length
       }));
 
@@ -63,17 +96,17 @@ const AnalyticsDashboard = () => {
       const ordersByDay = daysInRange.map(day => ({
         date: day,
         count: orders.filter(order => 
-          isSameDay(new Date(order.created_at || order.order_date), day)
+          order.created_at && isSameDay(new Date(order.created_at), day)
         ).length
       }));
 
       // Calculate stats
       const newUsers = users.filter(user => 
-        new Date(user.created_at || user.order_date) >= dateRange.start
+        user.created_at && new Date(user.created_at) >= dateRange.start
       ).length;
 
       const newOrders = orders.filter(order => 
-        new Date(order.created_at || order.order_date) >= dateRange.start
+        order.created_at && new Date(order.created_at) >= dateRange.start
       ).length;
 
       setStats({
@@ -125,7 +158,7 @@ const AnalyticsDashboard = () => {
             <h1 className="text-3xl font-bold text-gray-800">Analytics Dashboard</h1>
             <p className="text-gray-600 mt-2">Track user and order metrics</p>
           </div>
-          
+
           <div className="flex flex-col sm:flex-row gap-3 mt-4 md:mt-0">
             <div className="flex items-center gap-2">
               <FiCalendar className="text-gray-500" />

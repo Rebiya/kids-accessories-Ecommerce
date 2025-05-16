@@ -1,0 +1,169 @@
+/* Base Styles */
+.admin-layout {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f8f8f8;
+  color: #222222;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Sidebar Styles */
+.admin-sidebar {
+  background-color: #1a1a1a; /* Dark black */
+  border-right: 1px solid rgba(212, 175, 55, 0.2); /* Gold border */
+  height: 100vh;
+  position: fixed;
+  z-index: 10;
+  box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
+  transition: width 0.3s ease;
+}
+
+.admin-sidebar.collapsed {
+  width: 80px;
+}
+
+.admin-sidebar.expanded {
+  width: 256px;
+}
+
+.sidebar-header {
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.1); /* Gold subtle border */
+}
+
+.sidebar-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #d4af37; /* Gold */
+  margin: 0;
+}
+
+.collapse-button {
+  color: #d4af37; /* Gold */
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.25rem;
+  transition: transform 0.2s ease;
+}
+
+.collapse-button:hover {
+  transform: scale(1.1);
+}
+
+/* Navigation Styles */
+.admin-nav {
+  padding: 1.5rem;
+}
+
+.nav-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.nav-item {
+  margin-bottom: 0.5rem;
+}
+
+.nav-button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 0.75rem;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  color: #ffffff; /* White */
+}
+
+.nav-button:hover {
+  background-color: rgba(212, 175, 55, 0.1); /* Gold tint */
+}
+
+.nav-button.active {
+  background-color: rgba(212, 175, 55, 0.2); /* Gold */
+  color: #d4af37; /* Gold */
+  font-weight: 600;
+}
+
+.nav-icon {
+  font-size: 1.125rem;
+  color: inherit;
+}
+
+.nav-label {
+  margin-left: 0.75rem;
+  color: inherit;
+}
+
+/* Footer Styles */
+.sidebar-footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 1.5rem;
+  border-top: 1px solid rgba(212, 175, 55, 0.1); /* Gold subtle border */
+}
+
+.logout-button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 0.75rem;
+  color: #ffffff; /* White */
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.logout-button:hover {
+  color: #d4af37; /* Gold */
+}
+
+/* Main Content Styles */
+.main-content {
+  flex: 1;
+  transition: margin-left 0.3s ease;
+  background-color: #ffffff; /* White */
+}
+
+.main-content.collapsed {
+  margin-left: 80px;
+}
+
+.main-content.expanded {
+  margin-left: 256px;
+}
+
+.content-container {
+  padding: 1.5rem;
+  width: calc(100vw - 256px);
+  max-width: 100%;
+}
+
+/* Animation Styles */
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.slide-in {
+  animation: slideIn 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+/* Utility Classes */
+.hidden {
+  display: none;
+}
