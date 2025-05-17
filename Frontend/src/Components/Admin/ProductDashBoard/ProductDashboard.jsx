@@ -3,11 +3,12 @@ import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { 
-  FiEdit, FiTrash2, FiPlus, FiSearch, FiX, FiUpload, 
+  FiEdit, FiTrash2, FiPlus, FiSearch, FiX, FiUpload,FiChevronDown, 
   FiShoppingBag, FiStar, FiDollarSign 
 } from 'react-icons/fi';
 import { FaSpinner, FaCloudUploadAlt } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
+import styles from './productDashboard.module.css';
 
 // Cloudinary configuration
 const CLOUDINARY_UPLOAD_PRESET = 'products';
@@ -26,26 +27,26 @@ const DeleteConfirmationModal = ({ isOpen, onCancel, onConfirm, itemName }) => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+          className={styles.deleteModalOverlay}
         >
           <motion.div 
             initial={{ scale: 0.9, y: 20 }}
             animate={{ scale: 1, y: 0 }}
             exit={{ scale: 0.9, y: 20 }}
-            className="bg-white p-6 rounded-xl shadow-lg max-w-md w-full border border-gray-200"
+            className={styles.deleteModal}
           >
-            <h3 className="text-lg font-semibold mb-2 text-gray-800">Confirm Deletion</h3>
-            <p className="text-gray-600 mb-6">Are you sure you want to delete {itemName}? This action cannot be undone.</p>
-            <div className="flex justify-end space-x-3">
+            <h3 className={styles.deleteModalTitle}>Confirm Deletion</h3>
+            <p className={styles.deleteModalText}>Are you sure you want to delete {itemName}? This action cannot be undone.</p>
+            <div className={styles.deleteModalActions}>
               <button
                 onClick={onCancel}
-                className="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded transition-colors"
+                className={styles.deleteModalCancel}
               >
                 Cancel
               </button>
               <button
                 onClick={onConfirm}
-                className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors"
+                className={styles.deleteModalConfirm}
               >
                 Delete
               </button>
@@ -56,6 +57,51 @@ const DeleteConfirmationModal = ({ isOpen, onCancel, onConfirm, itemName }) => {
     </AnimatePresence>
   );
 };
+
+
+const ProductDescription = ({ description }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const maxChars = 50;
+  
+  const toggleExpand = () => {
+    setIsExpanded(!isExpanded);
+  };
+
+  // Function to truncate text to 50 characters
+  const truncateText = (text) => {
+    if (!text) return ''; // Handle case where description might be undefined/null
+    if (text.length <= maxChars) return text;
+    return text.substring(0, maxChars) + '...';
+  };
+
+  return (
+    <div className={styles.descriptionContainer}>
+      <div 
+        className={`${styles.descriptionText} ${
+          isExpanded ? styles.descriptionFull : styles.descriptionShort
+        }`}
+      >
+        {isExpanded ? description : truncateText(description)}
+      </div>
+      {description && description.length > maxChars && (
+        <button 
+          className={styles.seeMoreButton} 
+          onClick={toggleExpand}
+          type="button" // Add type="button" to prevent form submission if used in a form
+        >
+          {isExpanded ? 'See less' : 'See more'}
+          <FiChevronDown 
+            className={`${styles.seeMoreIcon} ${
+              isExpanded ? styles.seeMoreIconRotated : ''
+            }`} 
+            size={14} 
+          />
+        </button>
+      )}
+    </div>
+  );
+};
+
 
 const ProductDashboard = () => {
   const [products, setProducts] = useState([]);
@@ -268,203 +314,201 @@ const ProductDashboard = () => {
   );
 
   return (
-    <div className="flex-1 p-4">
+    <div className={styles.dashboard}>
       <ToastContainer position="top-right" autoClose={3000} />
       
       {/* Header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-800 mb-1">Product Management</h1>
-          <p className="text-gray-600">Manage your products inventory</p>
-        </div>
-        
-        <div className="flex flex-col md:flex-row gap-3 mt-4 md:mt-0 w-full md:w-auto">
-          <div className="relative flex-1 md:w-64">
-            <FiSearch className="absolute left-3 top-3 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Search products..."
-              className="w-full pl-10 pr-10 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-            {searchTerm && (
-              <button
-                onClick={() => setSearchTerm('')}
-                className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
-              >
-                <FiX />
-              </button>
-            )}
+      <div className={styles.container}>
+        <div className={styles.header}>
+          <div>
+            <h1 className={styles.title}>Product Management</h1>
+            <p className={styles.subtitle}>Manage your products inventory</p>
           </div>
           
-          <motion.button
-            onClick={() => openModal(null)}
-            className="flex items-center justify-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <FiPlus className="mr-2" />
-            Add Product
-          </motion.button>
-        </div>
-      </div>
-
-      {/* Product Table */}
-      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
-        {loading && !products.length ? (
-          <div className="flex justify-center items-center p-12">
-            <FaSpinner className="animate-spin text-blue-500 text-2xl" />
-          </div>
-        ) : filteredProducts.length === 0 ? (
-          <div className="p-8 text-center text-gray-500">
-            {searchTerm ? 'No products match your search' : 'No products found'}
-          </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rating</th>
-                  <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {filteredProducts.map((product) => (
-                  <motion.tr 
-                    key={product.ID} 
-                    className="hover:bg-gray-50 transition-colors"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <td className="px-4 py-4 max-w-xs">
-                      <div className="flex items-center">
-                        <div className="flex-shrink-0 h-10 w-10">
-                          <img
-                            className="h-10 w-10 rounded object-cover"
-                            src={product.image || 'https://via.placeholder.com/40'}
-                            alt={product.title}
-                          />
-                        </div>
-                        <div className="ml-4">
-                          <div className="text-sm font-medium text-gray-900 truncate">{product.title}</div>
-                          <div className="text-sm text-gray-500 line-clamp-2">{product.description}</div>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-4 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900 truncate">{product.category_name}</div>
-                    </td>
-                    <td className="px-4 py-4 whitespace-nowrap">
-                      <div className="flex items-center">
-                        <FiDollarSign className="text-blue-500 mr-1" />
-                        <span className="text-sm font-medium text-gray-900">
-                          {parseFloat(product.price).toFixed(2)}
-                        </span>
-                      </div>
-                    </td>
-                    <td className="px-4 py-4 whitespace-nowrap">
-                      <div className="flex items-center">
-                        <FiStar className="text-yellow-500 mr-1" />
-                        <span className="text-sm font-medium text-gray-900 mr-1">
-                          {product.rating_rate}
-                        </span>
-                        <span className="text-xs text-gray-500">
-                          ({product.rating_count})
-                        </span>
-                      </div>
-                    </td>
-                    <td className="px-4 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <div className="flex justify-end space-x-2">
-                        <motion.button
-                          onClick={() => openModal(product)}
-                          className="text-blue-600 hover:text-blue-800 p-1"
-                          whileHover={{ scale: 1.1 }}
-                          whileTap={{ scale: 0.9 }}
-                        >
-                          <FiEdit />
-                        </motion.button>
-                        <motion.button
-                          onClick={() => confirmDelete(product.ID)}
-                          className="text-red-600 hover:text-red-800 p-1"
-                          whileHover={{ scale: 1.1 }}
-                          whileTap={{ scale: 0.9 }}
-                        >
-                          <FiTrash2 />
-                        </motion.button>
-                      </div>
-                    </td>
-                  </motion.tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
-
-      {/* Add/Edit Modal */}
-      <AnimatePresence>
-        {isModalOpen && (
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
-          >
-            <motion.div 
-              initial={{ scale: 0.9, y: 20 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, y: 20 }}
-              className="bg-white rounded-xl shadow-lg border border-gray-200 w-full max-w-md max-h-[90vh] overflow-y-auto"
+          <div className={styles.controls}>
+            <div className={styles.searchContainer}>
+              <FiSearch className={styles.searchIcon} />
+              <input
+                type="text"
+                placeholder="Search products..."
+                className={styles.searchInput}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+              {searchTerm && (
+                <button
+                  onClick={() => setSearchTerm('')}
+                  className={styles.clearButton}
+                >
+                  <FiX />
+                </button>
+              )}
+            </div>
+            
+            <motion.button
+              onClick={() => openModal(null)}
+              className={styles.addButton}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             >
-              <div className="p-4 border-b border-gray-200 sticky top-0 bg-white z-10">
-                <div className="flex justify-between items-center">
-                  <h3 className="text-lg font-semibold text-gray-800">
-                    {currentItem ? 'Edit Product' : 'Add New Product'}
-                  </h3>
+              <FiPlus className={styles.addIcon} />
+              Add Product
+            </motion.button>
+          </div>
+        </div>
+
+        {/* Product Table */}
+        <div className={styles.productsTable}>
+          {loading && !products.length ? (
+            <div className={styles.loadingContainer}>
+              <FaSpinner className={styles.spinner} />
+            </div>
+          ) : filteredProducts.length === 0 ? (
+            <div className={styles.emptyMessage}>
+              {searchTerm ? 'No products match your search' : 'No products found'}
+            </div>
+          ) : (
+            <div className={styles.tableWrapper}>
+              <table className={styles.table}>
+                <thead className={styles.tableHead}>
+                  <tr>
+                    <th className={styles.tableHeader}>Product</th>
+                    <th className={styles.tableHeader}>Category</th>
+                    <th className={styles.tableHeader}>Price</th>
+                    <th className={styles.tableHeader}>Rating</th>
+                    <th className={styles.tableHeader}>Actions</th>
+                  </tr>
+                </thead>
+                <tbody className={styles.tableBody}>
+                  {filteredProducts.map((product) => (
+                    <motion.tr 
+                      key={product.ID} 
+                      className={styles.tableRow}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                     <td className={`${styles.tableCell} ${styles.productCell}`}>
+  <div className={styles.productInfo}>
+    <img
+      className={styles.productImage}
+      src={product.image || 'https://via.placeholder.com/40'}
+      alt={product.title}
+    />
+    <div className={styles.productDetails}>
+      <div className={styles.productTitle}>{product.title}</div>
+      <ProductDescription description={product.description} />
+    </div>
+  </div>
+</td>
+                      <td className={styles.tableCell}>
+                        <div className={styles.categoryName}>{product.category_name}</div>
+                      </td>
+                      <td className={styles.tableCell}>
+                        <div className={styles.priceCell}>
+                          <FiDollarSign className={styles.priceIcon} />
+                          <span className={styles.priceValue}>
+                            {parseFloat(product.price).toFixed(2)}
+                          </span>
+                        </div>
+                      </td>
+                      <td className={styles.tableCell}>
+                        <div className={styles.ratingCell}>
+                          <FiStar className={styles.ratingIcon} />
+                          <span className={styles.ratingValue}>
+                            {product.rating_rate}
+                          </span>
+                          <span className={styles.ratingCount}>
+                            ({product.rating_count})
+                          </span>
+                        </div>
+                      </td>
+                      <td className={`${styles.tableCell} ${styles.actionsCell}`}>
+                        <div className={styles.actions}>
+                          <motion.button
+                            onClick={() => openModal(product)}
+                            className={styles.editButton}
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
+                          >
+                            <FiEdit />
+                          </motion.button>
+                          <motion.button
+                            onClick={() => confirmDelete(product.ID)}
+                            className={styles.deleteButton}
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
+                          >
+                            <FiTrash2 />
+                          </motion.button>
+                        </div>
+                      </td>
+                    </motion.tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+
+        {/* Add/Edit Modal */}
+        <AnimatePresence>
+          {isModalOpen && (
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className={styles.modalOverlay}
+            >
+              <motion.div 
+                initial={{ scale: 0.9, y: 20 }}
+                animate={{ scale: 1, y: 0 }}
+                exit={{ scale: 0.9, y: 20 }}
+                className={styles.modal}
+              >
+                <div className={styles.modalHeader}>
+                  <div>
+                    <h3 className={styles.modalTitle}>
+                      {currentItem ? 'Edit Product' : 'Add New Product'}
+                    </h3>
+                  </div>
                   <button
                     onClick={closeModal}
-                    className="text-gray-500 hover:text-gray-700"
+                    className={styles.closeButton}
                   >
                     <FiX size={24} />
                   </button>
                 </div>
-              </div>
 
-              <form onSubmit={handleSubmit} className="p-6">
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                <form onSubmit={handleSubmit} className={styles.form}>
+                  <div className={styles.formGroup}>
+                    <label className={styles.label}>Title</label>
                     <input
                       type="text"
                       name="title"
                       value={productFormData.title}
                       onChange={handleInputChange}
-                      className="w-full p-2 bg-white border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700"
+                      className={styles.input}
                       required
                     />
                   </div>
                   
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                  <div className={styles.formGroup}>
+                    <label className={styles.label}>Description</label>
                     <textarea
                       name="description"
                       value={productFormData.description}
                       onChange={handleInputChange}
                       rows={3}
-                      className="w-full p-2 bg-white border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700"
+                      className={`${styles.input} ${styles.textarea}`}
                     />
                   </div>
                   
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Product Image</label>
+                  <div className={styles.formGroup}>
+                    <label className={styles.label}>Product Image</label>
                     <div 
-                      className={`border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors ${
-                        dragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-blue-500'
+                      className={`${styles.uploadContainer} ${
+                        dragging ? styles.uploadContainerDragging : ''
                       }`}
                       onDragEnter={handleDragEnter}
                       onDragLeave={handleDragLeave}
@@ -473,30 +517,30 @@ const ProductDashboard = () => {
                       onClick={() => document.getElementById('fileInput').click()}
                     >
                       {productFormData.image ? (
-                        <div className="relative">
+                        <div className={styles.previewContainer}>
                           <img 
                             src={productFormData.image} 
                             alt="Preview" 
-                            className="w-full h-40 object-contain rounded mb-2"
+                            className={styles.previewImage}
                           />
                           <button
                             type="button"
-                            className="absolute top-2 right-2 bg-white p-1 rounded-full hover:bg-gray-100 shadow-sm"
+                            className={styles.removeButton}
                             onClick={(e) => {
                               e.stopPropagation();
                               setProductFormData({ ...productFormData, image: '' });
                             }}
                           >
-                            <FiX className="text-red-500" />
+                            <FiX className={styles.removeIcon} />
                           </button>
                         </div>
                       ) : (
                         <>
-                          <FaCloudUploadAlt className="mx-auto text-4xl text-blue-500 mb-2" />
-                          <p className="text-gray-600 mb-1">
+                          <FaCloudUploadAlt className={styles.uploadIcon} />
+                          <p className={styles.uploadText}>
                             {dragging ? 'Drop image here' : 'Drag & drop image or click to browse'}
                           </p>
-                          <p className="text-xs text-gray-500">
+                          <p className={styles.uploadHint}>
                             Supports JPG, PNG up to 5MB
                           </p>
                         </>
@@ -505,42 +549,43 @@ const ProductDashboard = () => {
                         id="fileInput"
                         type="file"
                         accept="image/*"
-                        className="hidden"
+                        className={styles.fileInput}
                         onChange={handleFileChange}
                       />
                     </div>
                     {imageUploading && (
-                      <div className="flex items-center mt-2 text-gray-500">
-                        <FaSpinner className="animate-spin mr-2" />
+                      <div className={styles.uploadingText}>
+                        <FaSpinner className={styles.uploadingSpinner} />
                         Uploading image...
                       </div>
                     )}
                   </div>
                   
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Price</label>
-                      <div className="relative">
-                        <span className="absolute left-3 top-2 text-gray-500">$</span>
+                  <div className={styles.grid}>
+                    <div className={styles.formGroup}>
+                      <label className={styles.label}>Price</label>
+                      <div className={styles.relative}>
+                        <FiDollarSign className={styles.currencyIcon} />
                         <input
                           type="number"
                           step="0.01"
                           name="price"
                           value={productFormData.price}
                           onChange={handleInputChange}
-                          className="w-full pl-8 p-2 bg-white border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700"
+                          className={styles.input}
+                          style={{ paddingLeft: '32px' }}
                           required
                         />
                       </div>
                     </div>
                     
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                    <div className={styles.formGroup}>
+                      <label className={styles.label}>Category</label>
                       <select
                         name="category_name"
                         value={productFormData.category_name}
                         onChange={handleInputChange}
-                        className="w-full p-2 bg-white border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700"
+                        className={`${styles.input} ${styles.select}`}
                         required
                       >
                         <option value="">Select a category</option>
@@ -553,13 +598,11 @@ const ProductDashboard = () => {
                     </div>
                   </div>
                   
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Rating</label>
-                      <div className="relative">
-                        <span className="absolute left-3 top-2 text-gray-500">
-                          <FiStar className="text-yellow-500" />
-                        </span>
+                  <div className={styles.grid}>
+                    <div className={styles.formGroup}>
+                      <label className={styles.label}>Rating</label>
+                      <div className={styles.relative}>
+                        <FiStar className={styles.ratingIconInput} />
                         <input
                           type="number"
                           step="0.1"
@@ -568,58 +611,59 @@ const ProductDashboard = () => {
                           name="rating_rate"
                           value={productFormData.rating_rate}
                           onChange={handleInputChange}
-                          className="w-full pl-8 p-2 bg-white border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700"
+                          className={styles.input}
+                          style={{ paddingLeft: '32px' }}
                         />
                       </div>
                     </div>
                     
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Rating Count</label>
+                    <div className={styles.formGroup}>
+                      <label className={styles.label}>Rating Count</label>
                       <input
                         type="number"
                         name="rating_count"
                         value={productFormData.rating_count}
                         onChange={handleInputChange}
-                        className="w-full p-2 bg-white border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700"
+                        className={styles.input}
                       />
                     </div>
                   </div>
-                </div>
-                
-                <div className="flex justify-end space-x-3 mt-6 pt-4 border-t border-gray-200">
-                  <motion.button
-                    type="button"
-                    onClick={closeModal}
-                    className="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded transition-colors"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    Cancel
-                  </motion.button>
-                  <motion.button
-                    type="submit"
-                    disabled={loading || imageUploading}
-                    className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded transition-colors flex items-center"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    {loading && <FaSpinner className="animate-spin mr-2" />}
-                    {currentItem ? 'Update Product' : 'Add Product'}
-                  </motion.button>
-                </div>
-              </form>
+                  
+                  <div className={styles.formFooter}>
+                    <motion.button
+                      type="button"
+                      onClick={closeModal}
+                      className={styles.cancelButton}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      Cancel
+                    </motion.button>
+                    <motion.button
+                      type="submit"
+                      disabled={loading || imageUploading}
+                      className={styles.submitButton}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      {loading && <FaSpinner className={styles.submitSpinner} />}
+                      {currentItem ? 'Update Product' : 'Add Product'}
+                    </motion.button>
+                  </div>
+                </form>
+              </motion.div>
             </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          )}
+        </AnimatePresence>
 
-      {/* Delete Confirmation Modal */}
-      <DeleteConfirmationModal
-        isOpen={deleteModalOpen}
-        onCancel={() => setDeleteModalOpen(false)}
-        onConfirm={handleDelete}
-        itemName="this product"
-      />
+        {/* Delete Confirmation Modal */}
+        <DeleteConfirmationModal
+          isOpen={deleteModalOpen}
+          onCancel={() => setDeleteModalOpen(false)}
+          onConfirm={handleDelete}
+          itemName="this product"
+        />
+      </div>
     </div>
   );
 };

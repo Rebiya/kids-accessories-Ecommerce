@@ -1,0 +1,309 @@
+/* Welcome Screen Styles */
+.welcomeContainer {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: linear-gradient(135deg, #f8f8f8 0%, #f0f0f0 100%);
+}
+
+.welcomeCard {
+  background-color: white;
+  padding: 32px;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  max-width: 800px;
+  width: 100%;
+  border: 1px solid #e0e0e0;
+}
+
+.logoContainer {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.reactLogo {
+  background: linear-gradient(to right, #f5ce50, #F9B02E);
+  padding: 16px;
+  border-radius: 50%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.reactIcon {
+  font-size: 36px;
+  color: white;
+}
+
+.welcomeTitle {
+  font-size: 36px;
+  font-weight: 700;
+  text-align: center;
+  color: #222;
+  margin-bottom: 16px;
+}
+
+.gradientText {
+  background: linear-gradient(to right, #ad964a,#F9B02E);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.welcomeSubtitle {
+  font-size: 18px;
+  text-align: center;
+  color: #666;
+  margin-bottom: 32px;
+}
+
+.buttonContainer {
+  display: flex;
+  justify-content: center;
+}
+
+.launchButton {
+  display: flex;
+  align-items: center;
+  padding: 12px 32px;
+  background: linear-gradient(to right, #a08735, #F9B02E);
+  color: white;
+  font-weight: 500;
+  border-radius: 8px;
+  border: none;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.launchButton:hover {
+  background: linear-gradient(to right, #c9a227, #e6b30b);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.buttonIcon {
+  margin-right: 8px;
+}
+
+/* Dashboard Layout Styles */
+.dashboardContainer {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f8f8f8;
+}
+
+.mobileMenuButton {
+  position: fixed;
+  z-index: 30;
+  margin: 16px;
+  padding: 12px;
+  border-radius: 50%;
+  background-color: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  color: #666;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mobileMenuButton:hover {
+  color: #444;
+  background-color: #f0f0f0;
+}
+
+.menuIcon {
+  font-size: 20px;
+}
+
+.sidebar {
+  position: fixed;
+  z-index: 20;
+  height: 100%;
+  background-color: white;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  width: 256px;
+}
+
+@media (min-width: 768px) {
+  .sidebar {
+    position: relative;
+  }
+}
+
+.sidebarHeader {
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.brandContainer {
+  display: flex;
+  align-items: center;
+}
+
+.brandIcon {
+  font-size: 24px;
+  color: #F9B02E;
+  margin-right: 8px;
+}
+
+.brandText {
+  font-size: 20px;
+  font-weight: 700;
+  color: #222;
+}
+
+.closeSidebarButton {
+  padding: 8px;
+  border-radius: 50%;
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.closeSidebarButton:hover {
+  background-color: #f0f0f0;
+  color: #444;
+}
+
+.closeIcon {
+  font-size: 20px;
+}
+
+.navContainer {
+  padding: 16px;
+}
+
+.navList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.navButton {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  border-radius: 8px;
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.navButton:hover {
+  background-color: #f8f8f8;
+}
+
+.activeNavButton {
+  background: linear-gradient(to right, rgba(212, 175, 55, 0.1), rgba(241, 196, 15, 0.1));
+  color: #F9B02E;
+  font-weight: 500;
+}
+
+.navIcon {
+  font-size: 18px;
+}
+
+.navText {
+  margin-left: 12px;
+}
+
+.chevronIcon {
+  margin-left: auto;
+}
+
+.logoutContainer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 16px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.logoutButton {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.logoutButton:hover {
+  color: #444;
+}
+
+.logoutIcon {
+  font-size: 18px;
+}
+
+.logoutText {
+  margin-left: 12px;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 10;
+}
+
+.mainContent {
+  flex: 1;
+  padding: 24px;
+  overflow: auto;
+}
+
+@media (min-width: 768px) {
+  .mainContent {
+    padding: 32px;
+  }
+}
+
+.defaultContent {
+  padding: 32px;
+}
+
+.defaultTitle {
+  font-size: 24px;
+  font-weight: 700;
+  color: #222;
+  margin-bottom: 8px;
+}
+
+.defaultText {
+  color: #666;
+}
+
+/* Error and Success Messages */
+.errorMessage {
+  color: #e02424;
+  background-color: #fdf2f2;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.successMessage {
+  color: #047857;
+  background-color: #f0fdf4;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}

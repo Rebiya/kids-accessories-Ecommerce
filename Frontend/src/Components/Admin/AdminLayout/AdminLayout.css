@@ -2,14 +2,14 @@
 .admin-layout {
   display: flex;
   min-height: 100vh;
-  background-color: #f8f8f8;
+  background-color: #F9B02E;
   color: #222222;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 /* Sidebar Styles */
 .admin-sidebar {
-  background-color: #1a1a1a; /* Dark black */
+  background-color: #F8F8F8; /* Dark black */
   border-right: 1px solid rgba(212, 175, 55, 0.2); /* Gold border */
   height: 100vh;
   position: fixed;
@@ -37,12 +37,12 @@
 .sidebar-title {
   font-size: 1.25rem;
   font-weight: 700;
-  color: #d4af37; /* Gold */
+  color: #F9B02E; /* Gold */
   margin: 0;
 }
 
 .collapse-button {
-  color: #d4af37; /* Gold */
+  color: #F9B02E; /* Gold */
   background: none;
   border: none;
   cursor: pointer;
@@ -79,7 +79,7 @@
   background-color: transparent;
   border: none;
   cursor: pointer;
-  color: #ffffff; /* White */
+  color: black; /* White */
 }
 
 .nav-button:hover {
@@ -88,7 +88,7 @@
 
 .nav-button.active {
   background-color: rgba(212, 175, 55, 0.2); /* Gold */
-  color: #d4af37; /* Gold */
+  color: #F9B02E; /* Gold */
   font-weight: 600;
 }
 
@@ -117,7 +117,7 @@
   display: flex;
   align-items: center;
   padding: 0.75rem;
-  color: #ffffff; /* White */
+  color: black; /* White */
   background: none;
   border: none;
   cursor: pointer;
@@ -125,7 +125,7 @@
 }
 
 .logout-button:hover {
-  color: #d4af37; /* Gold */
+  color: #F9B02E; /* Gold */
 }
 
 /* Main Content Styles */

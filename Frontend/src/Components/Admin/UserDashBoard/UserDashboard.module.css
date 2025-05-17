@@ -1,0 +1,564 @@
+.dashboardContainer {
+  min-height: 100vh;
+  background-color: #f8f8f8;
+  padding: 24px;
+}
+
+.dashboardContent {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 32px;
+}
+
+@media (min-width: 768px) {
+  .header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+.title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #222;
+  margin: 0;
+}
+
+.subtitle {
+  color: #666;
+  margin-top: 8px;
+}
+
+.headerControls {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 16px;
+  width: 100%;
+}
+
+@media (min-width: 640px) {
+  .headerControls {
+    flex-direction: row;
+    margin-top: 0;
+    width: auto;
+  }
+}
+
+.searchContainer {
+  position: relative;
+  flex: 1;
+}
+
+@media (min-width: 768px) {
+  .searchContainer {
+    width: 256px;
+  }
+}
+
+.searchIcon {
+  position: absolute;
+  left: 12px;
+  top: 12px;
+  color: #999;
+}
+
+.searchInput {
+  width: 100%;
+  padding-left: 40px;
+  padding-right: 16px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  outline: none;
+}
+
+.searchInput:focus {
+  border-color: #F9B02E;
+  box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+}
+
+.addButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  background-color: #F9B02E;
+  color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.2s;
+  cursor: pointer;
+}
+
+.addButton:hover {
+  background-color: #c9a227;
+}
+
+.buttonIcon {
+  margin-right: 8px;
+}
+
+.tableContainer {
+  background-color: white;
+  border-radius: 12px;
+  border: 1px solid #e0e0e0;
+  overflow: hidden;
+}
+
+.loadingContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 48px;
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border-top: 2px solid #d4af37;
+  border-right: 2px solid transparent;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.emptyState {
+  padding: 32px;
+  text-align: center;
+  color: #666;
+}
+
+.tableWrapper {
+  overflow-x: auto;
+}
+
+.usersTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tableHeader {
+  background-color: #f5f5f5;
+}
+
+.tableHeaderCell {
+  padding: 12px 24px;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 500;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.tableHeaderCellActions {
+  padding: 12px 24px;
+  text-align: right;
+  font-size: 12px;
+  font-weight: 500;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.tableBody {
+  background-color: white;
+}
+
+.tableRow {
+  transition: background-color 0.2s;
+}
+
+.tableRow:hover {
+  background-color: #f9f9f9;
+}
+
+.tableCell {
+  padding: 16px 24px;
+  white-space: nowrap;
+}
+
+.tableCellActions {
+  padding: 16px 24px;
+  white-space: nowrap;
+  text-align: right;
+}
+
+.userCell {
+  display: flex;
+  align-items: center;
+}
+
+.userAvatar {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #f5e6c8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.userIcon {
+  width: 20px;
+  height: 20px;
+  color: #F9B02E;
+}
+
+.userInfo {
+  margin-left: 16px;
+}
+
+.userName {
+  font-size: 14px;
+  font-weight: 500;
+  color: #222;
+}
+
+.userEmail {
+  font-size: 13px;
+  color: #666;
+}
+
+.contactEmail {
+  font-size: 14px;
+  color: #222;
+}
+
+.contactPhone {
+  font-size: 13px;
+  color: #666;
+}
+
+.roleBadge {
+  padding: 4px 8px;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 9999px;
+  display: inline-block;
+}
+
+.roleUser {
+  background-color: #f0f7ff;
+  color: green;
+}
+
+.roleModerator {
+  background-color: #f5f0ff;
+  color: green;
+}
+
+.roleAdmin {
+  background-color: #fdf2f2;
+  color: #e02424;
+}
+
+.roleDefault {
+  background-color: #f3f4f6;
+  color: #6b7280;
+}
+
+.actionsContainer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.editButton {
+  color: #F9B02E;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.editButton:hover {
+  color: #c9a227;
+}
+
+.deleteButton {
+  color: #e02424;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.deleteButton:hover {
+  color: #c81e1e;
+}
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 50;
+}
+
+.modal {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 448px;
+}
+
+.deleteModal {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 448px;
+}
+
+.modalHeader {
+  padding: 16px;
+  border-bottom: 1px solid #e0e0e0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modalTitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: #222;
+  margin: 0;
+}
+
+.deleteModalTitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: #222;
+  margin: 0;
+}
+
+.deleteModalText {
+  font-size: 14px;
+  color: #666;
+  margin-top: 4px;
+}
+
+.modalCloseButton {
+  color: #999;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.modalCloseButton:hover {
+  color: #666;
+}
+
+.modalForm {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.deleteModalContent {
+  padding: 24px;
+}
+
+.deleteModalHeader {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.deleteIconContainer {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: #fdf2f2;
+  margin-right: 16px;
+}
+
+.deleteIcon {
+  width: 20px;
+  height: 20px;
+  color: #e02424;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.formLabel {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #444;
+  margin-bottom: 4px;
+}
+
+.inputContainer {
+  position: relative;
+}
+
+.inputIcon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
+  color: #999;
+}
+
+.formInput {
+  width: 100%;
+  padding: 8px 12px 8px 40px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  outline: none;
+}
+
+.formInput:focus {
+  border-color: #d4af37;
+  box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+}
+
+.formSelect {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  outline: none;
+}
+
+.formSelect:focus {
+  border-color: #F9B02E;
+  box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+}
+
+.formFooter {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 16px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.deleteModalFooter {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 16px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.cancelButton {
+  padding: 8px 16px;
+  background-color: #e0e0e0;
+  color: #444;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.cancelButton:hover {
+  background-color: #d1d1d1;
+}
+
+.deleteCancelButton {
+  padding: 8px 16px;
+  background-color: #e0e0e0;
+  color: #444;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.deleteCancelButton:hover {
+  background-color: #d1d1d1;
+}
+
+.submitButton {
+  padding: 8px 16px;
+  background-color: #F9B02E;
+  color: white;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: background-color 0.2s;
+}
+
+.submitButton:hover {
+  background-color: #c9a227;
+}
+
+.submitButton:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.deleteConfirmButton {
+  padding: 8px 16px;
+  background-color: #e02424;
+  color: white;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.deleteConfirmButton:hover {
+  background-color: #c81e1e;
+}
+
+.deleteConfirmButton:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.buttonSpinner {
+  animation: spin 1s linear infinite;
+  width: 16px;
+  height: 16px;
+  margin-right: 8px;
+}
+
+/* Toast notifications */
+.Toastify__toast--error {
+  background-color: #fdf2f2;
+  color: #e02424;
+}
+
+.Toastify__toast--success {
+  background-color: #f0fdf4;
+  color: #047857;
+}

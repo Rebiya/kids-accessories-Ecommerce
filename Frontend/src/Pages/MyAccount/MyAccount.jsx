@@ -5,7 +5,7 @@ import { RiEdit2Fill, RiSaveFill } from 'react-icons/ri';
 
 const MyAccount = () => {
   const [user, setUser] = useState({
-    name: 'Rebuma Kedir',
+    name: 'Rebiya Musema',
     email: 'rebum.19@gmail.com',
     phone: '+2510993044432',
     address: 'Addis Ababa, Ethiopia',

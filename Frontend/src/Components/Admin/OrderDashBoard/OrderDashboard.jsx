@@ -7,6 +7,7 @@ import {
   FiPackage, FiChevronDown, FiChevronUp, FiX, FiRefreshCw 
 } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
+import styles from './orderDashboard.module.css';
 
 const API_BASE_URL = 'http://localhost:3000/api';
 
@@ -22,9 +23,9 @@ const OrderDashboard = () => {
 
   // Status colors and options
   const statusColors = {
-    pending: 'bg-yellow-100 text-yellow-800',
-    delivered: 'bg-green-100 text-green-800',
-    cancelled: 'bg-red-100 text-red-800'
+    pending: styles.statusPending,
+    delivered: styles.statusDelivered,
+    cancelled: styles.statusCancelled
   };
 
   const statusOptions = [
@@ -76,18 +77,12 @@ const OrderDashboard = () => {
       );
       
       // Create users map
-    // Create users map using user_id format (lowercase)
-// After fetching usersResponse
-const usersMap = {};
-usersResponse.forEach(user => {
-  if (user) {
-    usersMap[user.ID.toLowerCase()] = user;  // normalize to lowercase
-  }
-});
-
-
-    
-
+      const usersMap = {};
+      usersResponse.forEach(user => {
+        if (user) {
+          usersMap[user.ID.toLowerCase()] = user;  // normalize to lowercase
+        }
+      });
       
       // Create products map
       const productsMap = {};
@@ -140,8 +135,7 @@ usersResponse.forEach(user => {
   // Filter orders based on search term
   const filteredOrders = orders.filter(order => {
     const orderId = order?.id?.toString().toLowerCase() || '';
-    const user = users[order.user_id]
-    || {};
+    const user = users[order.user_id] || {};
     const userEmail = user?.email?.toLowerCase() || '';
     const userName = `${user?.first_name || ''} ${user?.last_name || ''}`.toLowerCase();
     const status = order?.status?.toLowerCase() || '';
@@ -169,10 +163,27 @@ usersResponse.forEach(user => {
     }
   };
 
-
- // Get user by ID
- const getUserById = (userId) => {
-  if (!userId) {
+  // Get user by ID
+  const getUserById = (userId) => {
+    if (!userId) {
+      return {
+        ID: userId,
+        email: 'Unknown user',
+        phone_number: 'N/A',
+        first_name: 'Unknown',
+        last_name: 'User'
+      };
+    }
+    const user = users[userId.toLowerCase()];
+    if (user) {
+      return {
+        ID: user.ID,
+        email: user.email,
+        phone_number: user.phone_number,
+        first_name: user.first_name,
+        last_name: user.last_name
+      };
+    }
     return {
       ID: userId,
       email: 'Unknown user',
@@ -180,25 +191,7 @@ usersResponse.forEach(user => {
       first_name: 'Unknown',
       last_name: 'User'
     };
-  }
-  const user = users[userId.toLowerCase()];
-  if (user) {
-    return {
-      ID: user.ID,
-      email: user.email,
-      phone_number: user.phone_number,
-      first_name: user.first_name,
-      last_name: user.last_name
-    };
-  }
-  return {
-    ID: userId,
-    email: 'Unknown user',
-    phone_number: 'N/A',
-    first_name: 'Unknown',
-    last_name: 'User'
   };
-};
 
   // Get product by ID
   const getProductById = (productId) => {
@@ -222,63 +215,63 @@ usersResponse.forEach(user => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className={styles.dashboard}>
       <ToastContainer position="top-right" autoClose={3000} />
       
       {/* Header */}
-      <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
+      <div className={styles.container}>
+        <div className={styles.header}>
           <div>
-            <h1 className="text-3xl font-bold text-gray-800">Order Management</h1>
-            <p className="text-gray-600 mt-2">View and manage customer orders</p>
+            <h1 className={styles.title}>Order Management</h1>
+            <p className={styles.subtitle}>View and manage customer orders</p>
           </div>
           
-          <div className="flex flex-col sm:flex-row gap-3 mt-4 md:mt-0 w-full md:w-auto">
-            <div className="relative flex-1 md:w-64">
-              <FiSearch className="absolute left-3 top-3 text-gray-400" />
+          <div className={styles.controls}>
+            <div className={styles.searchContainer}>
+              <FiSearch className={styles.searchIcon} />
               <input
                 type="text"
                 placeholder="Search orders..."
-                className="w-full pl-10 pr-4 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className={styles.searchInput}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
             <button
               onClick={fetchOrdersAndRelatedData}
-              className="flex items-center justify-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors"
+              className={styles.refreshButton}
             >
-              <FiRefreshCw className="mr-2" />
+              <FiRefreshCw className={styles.refreshIcon} />
               Refresh
             </button>
           </div>
         </div>
 
         {/* Orders Table */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div className={styles.ordersTable}>
           {loading && !orders.length ? (
-            <div className="flex justify-center items-center p-12">
-              <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-indigo-500"></div>
+            <div className={styles.loadingContainer}>
+              <div className={styles.spinner}></div>
             </div>
           ) : filteredOrders.length === 0 ? (
-            <div className="p-8 text-center text-gray-500">
+            <div className={styles.emptyMessage}>
               {searchTerm ? 'No orders match your search' : 'No orders found'}
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+            <div className={styles.tableWrapper}>
+              <table className={styles.table}>
+                <thead className={styles.tableHead}>
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order ID</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    <th className={styles.tableHeader}>Order ID</th>
+                    <th className={styles.tableHeader}>Customer</th>
+                    <th className={styles.tableHeader}>Product</th>
+                    <th className={styles.tableHeader}>Date</th>
+                    <th className={styles.tableHeader}>Status</th>
+                    <th className={styles.tableHeader}>Amount</th>
+                    <th className={styles.tableHeader}>Actions</th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className={styles.tableBody}>
                   {filteredOrders.map((order) => {
                     const user = getUserById(order.user_id);
                     const product = getProductById(order.product_id);
@@ -289,75 +282,74 @@ usersResponse.forEach(user => {
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
                           transition={{ duration: 0.3 }}
-                          className="hover:bg-gray-50 cursor-pointer"
+                          className={styles.tableRow}
                           onClick={() => toggleOrderDetails(order.id)}
                         >
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm font-medium text-gray-900">
+                          <td className={styles.tableCell}>
+                            <div className={styles.orderId}>
                               {order.id ? `#${order.id.toString().slice(-6)}` : 'N/A'}
                             </div>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="flex items-center">
-                              <div className="flex-shrink-0 h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center">
-                                <FiUser className="h-5 w-5 text-indigo-600" />
+                          <td className={styles.tableCell}>
+                            <div className={styles.customerCell}>
+                              <div className={styles.avatar}>
+                                <FiUser className={styles.avatarIcon} />
                               </div>
-                              <div className="ml-4">
-                                <div className="text-sm font-medium text-gray-900">
+                              <div className={styles.customerInfo}>
+                                <div className={styles.customerName}>
                                   {`${user.first_name || ''} ${user.last_name || ''}`.trim() || 'Guest'}
                                 </div>
-                                <div className="text-sm text-gray-500">
+                                <div className={styles.customerEmail}>
                                   {user.email || 'No email'}
                                 </div>
                               </div>
                             </div>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm font-medium text-gray-900">
+                          <td className={styles.tableCell}>
+                            <div className={styles.productName}>
                               {product.title || 'Unknown product'}
                             </div>
-                            <div className="text-sm text-gray-500">
+                            <div className={styles.productPrice}>
                               ${product.price || 'N/A'}
                             </div>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm text-gray-900">
+                          <td className={styles.tableCell}>
+                            <div className={styles.orderDate}>
                               {formatDate(order.created_at)}
                             </div>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
+                          <td className={styles.tableCell}>
                             <select
                               value={order.status || 'pending'}
                               onChange={(e) => updateOrderStatus(order.id, e.target.value)}
                               disabled={updatingStatus === order.id}
-                              className={`px-2 py-1 text-xs font-medium rounded-full ${
-                                statusColors[order.status] || 'bg-gray-100 text-gray-800'
-                              } ${updatingStatus === order.id ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                              className={`${styles.statusSelect} ${statusColors[order.status] || ''} ${
+                                updatingStatus === order.id ? styles.disabled : ''
+                              }`}
                             >
                               {statusOptions.map(option => (
                                 <option 
                                   key={option.value} 
                                   value={option.value}
-                                  className="bg-white text-gray-800"
                                 >
                                   {option.label}
                                 </option>
                               ))}
                             </select>
                             {updatingStatus === order.id && (
-                              <span className="ml-2 text-xs text-gray-500">Updating...</span>
+                              <span className={styles.updatingText}>Updating...</span>
                             )}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm font-medium text-gray-900 flex items-center">
-                              <FiDollarSign className="mr-1" />
+                          <td className={styles.tableCell}>
+                            <div className={styles.amount}>
+                              <FiDollarSign className={styles.amountIcon} />
                               {order.amount || '0.00'}
                             </div>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            <div className="flex justify-end items-center">
+                          <td className={styles.tableCell}>
+                            <div className={styles.actions}>
                               <motion.button
-                                className="text-indigo-600 hover:text-indigo-900 mr-3"
+                                className={styles.viewButton}
                                 whileHover={{ scale: 1.1 }}
                                 whileTap={{ scale: 0.9 }}
                                 onClick={(e) => {
@@ -368,9 +360,9 @@ usersResponse.forEach(user => {
                                 <FiEye />
                               </motion.button>
                               {expandedOrder === order.id ? (
-                                <FiChevronUp className="text-gray-400" />
+                                <FiChevronUp className={styles.chevron} />
                               ) : (
-                                <FiChevronDown className="text-gray-400" />
+                                <FiChevronDown className={styles.chevron} />
                               )}
                             </div>
                           </td>
@@ -384,57 +376,55 @@ usersResponse.forEach(user => {
                               animate={{ opacity: 1, height: 'auto' }}
                               exit={{ opacity: 0, height: 0 }}
                               transition={{ duration: 0.3 }}
-                              className="bg-gray-50"
+                              className={styles.expandedRow}
                             >
-                              <td colSpan="7" className="px-6 py-4">
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                  <div className="bg-white p-4 rounded-lg shadow-xs border border-gray-200">
-                                    <h3 className="text-sm font-medium text-gray-900 mb-2 flex items-center">
-                                      <FiUser className="mr-2" />
+                              <td colSpan="7" className={styles.expandedContent}>
+                                <div className={styles.detailsGrid}>
+                                  <div className={styles.detailCard}>
+                                    <h3 className={styles.detailTitle}>
+                                      <FiUser className={styles.detailIcon} />
                                       Customer Details
                                     </h3>
-                                    <div className="space-y-1 text-sm text-gray-600">
-                                      <p><span className="font-medium">Name:</span> {`${user.first_name || ''} ${user.last_name || ''}`.trim() || 'Guest'}</p>
-                                      <p><span className="font-medium">Email:</span> {user.email || 'No email'}</p>
-                                      <p><span className="font-medium">Phone:</span> {user.phone_number || 'No phone'}</p>
+                                    <div className={styles.detailList}>
+                                      <p className={styles.detailItem}><span className={styles.detailLabel}>Name:</span> {`${user.first_name || ''} ${user.last_name || ''}`.trim() || 'Guest'}</p>
+                                      <p className={styles.detailItem}><span className={styles.detailLabel}>Email:</span> {user.email || 'No email'}</p>
+                                      <p className={styles.detailItem}><span className={styles.detailLabel}>Phone:</span> {user.phone_number || 'No phone'}</p>
                                     </div>
                                   </div>
 
-                                  <div className="bg-white p-4 rounded-lg shadow-xs border border-gray-200">
-                                    <h3 className="text-sm font-medium text-gray-900 mb-2 flex items-center">
-                                      <FiPackage className="mr-2" />
+                                  <div className={styles.detailCard}>
+                                    <h3 className={styles.detailTitle}>
+                                      <FiPackage className={styles.detailIcon} />
                                       Order Details
                                     </h3>
-                                    <div className="space-y-1 text-sm text-gray-600">
-                                      <p><span className="font-medium">Order ID:</span> {order.id}</p>
-                                      <p><span className="font-medium">Date:</span> {formatDate(order.created_at)}</p>
-                                      <p><span className="font-medium">Status:</span> 
-                                        <span className={`ml-1 px-2 py-1 rounded-full text-xs ${
-                                          statusColors[order.status] || 'bg-gray-100 text-gray-800'
-                                        }`}>
+                                    <div className={styles.detailList}>
+                                      <p className={styles.detailItem}><span className={styles.detailLabel}>Order ID:</span> {order.id}</p>
+                                      <p className={styles.detailItem}><span className={styles.detailLabel}>Date:</span> {formatDate(order.created_at)}</p>
+                                      <p className={styles.detailItem}><span className={styles.detailLabel}>Status:</span> 
+                                        <span className={`${styles.statusBadge} ${statusColors[order.status] || ''}`}>
                                           {order.status ? order.status.charAt(0).toUpperCase() + order.status.slice(1) : 'Unknown'}
                                         </span>
                                       </p>
-                                      <p><span className="font-medium">Payment ID:</span> {order.stripe_payment_id || 'N/A'}</p>
+                                      <p className={styles.detailItem}><span className={styles.detailLabel}>Payment ID:</span> {order.stripe_payment_id || 'N/A'}</p>
                                     </div>
                                   </div>
 
-                                  <div className="bg-white p-4 rounded-lg shadow-xs border border-gray-200">
-                                    <h3 className="text-sm font-medium text-gray-900 mb-2 flex items-center">
-                                      <FiDollarSign className="mr-2" />
+                                  <div className={styles.detailCard}>
+                                    <h3 className={styles.detailTitle}>
+                                      <FiDollarSign className={styles.detailIcon} />
                                       Product & Payment
                                     </h3>
-                                    <div className="space-y-1 text-sm text-gray-600">
-                                      <p><span className="font-medium">Product:</span> {product.title || 'Unknown'}</p>
+                                    <div className={styles.detailList}>
+                                      <p className={styles.detailItem}><span className={styles.detailLabel}>Product:</span> {product.title || 'Unknown'}</p>
                                       {product.image && (
                                         <img 
                                           src={product.image} 
                                           alt={product.title} 
-                                          className="w-16 h-16 object-cover rounded mt-1"
+                                          className={styles.productImage}
                                         />
                                       )}
-                                      <p><span className="font-medium">Price:</span> ${product.price || 'N/A'}</p>
-                                      <p><span className="font-medium">Amount Paid:</span> ${order.amount || '0.00'}</p>
+                                      <p className={styles.detailItem}><span className={styles.detailLabel}>Price:</span> ${product.price || 'N/A'}</p>
+                                      <p className={styles.detailItem}><span className={styles.detailLabel}>Amount Paid:</span> ${order.amount || '0.00'}</p>
                                     </div>
                                   </div>
                                 </div>
@@ -459,49 +449,49 @@ usersResponse.forEach(user => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center p-4 z-50"
+            className={styles.modalOverlay}
           >
             <motion.div 
               initial={{ scale: 0.9, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.9, y: 20 }}
-              className="bg-white rounded-xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto"
+              className={styles.modal}
             >
-              <div className="p-4 border-b border-gray-200 flex justify-between items-center sticky top-0 bg-white z-10">
-                <h3 className="text-lg font-semibold text-gray-800">
+              <div className={styles.modalHeader}>
+                <h3 className={styles.modalTitle}>
                   Order Details (#{selectedOrder.id ? selectedOrder.id.toString().slice(-6) : 'N/A'})
                 </h3>
                 <button
                   onClick={() => setSelectedOrder(null)}
-                  className="text-gray-400 hover:text-gray-500"
+                  className={styles.closeButton}
                 >
                   <FiX size={20} />
                 </button>
               </div>
               
-              <div className="p-6">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                  <div className="bg-gray-50 p-4 rounded-lg">
-                    <h4 className="text-sm font-medium text-gray-900 mb-3 flex items-center">
-                      <FiUser className="mr-2" />
+              <div className={styles.modalBody}>
+                <div className={styles.modalGrid}>
+                  <div className={styles.modalCard}>
+                    <h4 className={styles.detailTitle}>
+                      <FiUser className={styles.detailIcon} />
                       Customer Information
                     </h4>
-                    <div className="space-y-2 text-sm text-gray-600">
-                      <p><span className="font-medium">Name:</span> {`${selectedOrder.userDetails?.first_name || ''} ${selectedOrder.userDetails?.last_name || ''}`.trim() || 'Guest'}</p>
-                      <p><span className="font-medium">Email:</span> {selectedOrder.userDetails?.email || 'No email'}</p>
-                      <p><span className="font-medium">Phone:</span> {selectedOrder.userDetails?.phone_number || 'N/A'}</p>
+                    <div className={styles.detailList}>
+                      <p className={styles.detailItem}><span className={styles.detailLabel}>Name:</span> {`${selectedOrder.userDetails?.first_name || ''} ${selectedOrder.userDetails?.last_name || ''}`.trim() || 'Guest'}</p>
+                      <p className={styles.detailItem}><span className={styles.detailLabel}>Email:</span> {selectedOrder.userDetails?.email || 'No email'}</p>
+                      <p className={styles.detailItem}><span className={styles.detailLabel}>Phone:</span> {selectedOrder.userDetails?.phone_number || 'N/A'}</p>
                     </div>
                   </div>
 
-                  <div className="bg-gray-50 p-4 rounded-lg">
-                    <h4 className="text-sm font-medium text-gray-900 mb-3 flex items-center">
-                      <FiPackage className="mr-2" />
+                  <div className={styles.modalCard}>
+                    <h4 className={styles.detailTitle}>
+                      <FiPackage className={styles.detailIcon} />
                       Order Information
                     </h4>
-                    <div className="space-y-2 text-sm text-gray-600">
-                      <p><span className="font-medium">Order ID:</span> {selectedOrder.id}</p>
-                      <p><span className="font-medium">Date:</span> {formatDate(selectedOrder.created_at)}</p>
-                      <p><span className="font-medium">Status:</span> 
+                    <div className={styles.detailList}>
+                      <p className={styles.detailItem}><span className={styles.detailLabel}>Order ID:</span> {selectedOrder.id}</p>
+                      <p className={styles.detailItem}><span className={styles.detailLabel}>Date:</span> {formatDate(selectedOrder.created_at)}</p>
+                      <p className={styles.detailItem}><span className={styles.detailLabel}>Status:</span> 
                         <select
                           value={selectedOrder.status || 'pending'}
                           onChange={(e) => {
@@ -509,15 +499,14 @@ usersResponse.forEach(user => {
                             setSelectedOrder(prev => ({...prev, status: e.target.value}));
                           }}
                           disabled={updatingStatus === selectedOrder.id}
-                          className={`ml-2 px-2 py-1 rounded-full text-xs ${
-                            statusColors[selectedOrder.status] || 'bg-gray-100 text-gray-800'
-                          } ${updatingStatus === selectedOrder.id ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                          className={`${styles.statusSelect} ${statusColors[selectedOrder.status] || ''} ${
+                            updatingStatus === selectedOrder.id ? styles.disabled : ''
+                          }`}
                         >
                           {statusOptions.map(option => (
                             <option 
                               key={option.value} 
                               value={option.value}
-                              className="bg-white text-gray-800"
                             >
                               {option.label}
                             </option>
@@ -527,22 +516,22 @@ usersResponse.forEach(user => {
                     </div>
                   </div>
 
-                  <div className="bg-gray-50 p-4 rounded-lg">
-                    <h4 className="text-sm font-medium text-gray-900 mb-3 flex items-center">
-                      <FiDollarSign className="mr-2" />
+                  <div className={styles.modalCard}>
+                    <h4 className={styles.detailTitle}>
+                      <FiDollarSign className={styles.detailIcon} />
                       Product & Payment
                     </h4>
-                    <div className="space-y-2 text-sm text-gray-600">
-                      <p><span className="font-medium">Product:</span> {selectedOrder.productDetails?.title || 'Unknown'}</p>
+                    <div className={styles.detailList}>
+                      <p className={styles.detailItem}><span className={styles.detailLabel}>Product:</span> {selectedOrder.productDetails?.title || 'Unknown'}</p>
                       {selectedOrder.productDetails?.image && (
                         <img 
                           src={selectedOrder.productDetails.image} 
                           alt={selectedOrder.productDetails.title} 
-                          className="w-16 h-16 object-cover rounded mt-1"
+                          className={styles.productImage}
                         />
                       )}
-                      <p><span className="font-medium">Price:</span> ${selectedOrder.productDetails?.price || 'N/A'}</p>
-                      <p><span className="font-medium">Amount Paid:</span> ${selectedOrder.amount || '0.00'}</p>
+                      <p className={styles.detailItem}><span className={styles.detailLabel}>Price:</span> ${selectedOrder.productDetails?.price || 'N/A'}</p>
+                      <p className={styles.detailItem}><span className={styles.detailLabel}>Amount Paid:</span> ${selectedOrder.amount || '0.00'}</p>
                     </div>
                   </div>
                 </div>

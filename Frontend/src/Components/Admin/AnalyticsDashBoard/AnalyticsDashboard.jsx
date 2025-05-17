@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Bar, Line, Pie } from 'react-chartjs-2';
@@ -12,8 +11,8 @@ import {
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { format, subDays, eachDayOfInterval, isSameDay } from 'date-fns';
+import styles from './Analytics.module.css';
 
-// Add these Chart.js registrations
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -27,7 +26,6 @@ import {
   Legend
 } from 'chart.js';
 
-// Register ChartJS components
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -58,33 +56,25 @@ const AnalyticsDashboard = () => {
     ordersData: []
   });
 
-  // Fetch all analytics data
   const fetchAnalyticsData = async () => {
     try {
       setLoading(true);
       setError(null);
 
-      // Fetch users and orders in parallel
       const [usersResponse, ordersResponse] = await Promise.all([
         axios.get(`${API_BASE_URL}/users`),
         axios.get(`${API_BASE_URL}/order`)
       ]);
 
-      // Convert single user response to array
       const usersData = usersResponse.data.users;
-const users = Array.isArray(usersData) ? usersData : (usersData ? [usersData] : []);
-
-
-      // Orders is a direct array
+      const users = Array.isArray(usersData) ? usersData : (usersData ? [usersData] : []);
       const orders = ordersResponse.data || [];
 
-      // Process data for charts
       const daysInRange = eachDayOfInterval({
         start: dateRange.start,
         end: dateRange.end
       });
 
-      // Prepare user registration data
       const usersByDay = daysInRange.map(day => ({
         date: day,
         count: users.filter(user => 
@@ -92,7 +82,6 @@ const users = Array.isArray(usersData) ? usersData : (usersData ? [usersData] : 
         ).length
       }));
 
-      // Prepare order creation data
       const ordersByDay = daysInRange.map(day => ({
         date: day,
         count: orders.filter(order => 
@@ -100,7 +89,6 @@ const users = Array.isArray(usersData) ? usersData : (usersData ? [usersData] : 
         ).length
       }));
 
-      // Calculate stats
       const newUsers = users.filter(user => 
         user.created_at && new Date(user.created_at) >= dateRange.start
       ).length;
@@ -129,7 +117,6 @@ const users = Array.isArray(usersData) ? usersData : (usersData ? [usersData] : 
     fetchAnalyticsData();
   }, [dateRange]);
 
-  // Prepare chart data
   const getChartData = (data, label, color) => {
     return {
       labels: data.map(item => format(item.date, 'MMM dd')),
@@ -143,32 +130,30 @@ const users = Array.isArray(usersData) ? usersData : (usersData ? [usersData] : 
     };
   };
 
-  // Calculate percentage change
   const calculateChange = (current, previous) => {
     if (previous === 0) return 100;
     return ((current - previous) / previous) * 100;
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
+    <div className={styles.dashboard}>
+      <div className={styles.container}>
+        <div className={styles.header}>
           <div>
-            <h1 className="text-3xl font-bold text-gray-800">Analytics Dashboard</h1>
-            <p className="text-gray-600 mt-2">Track user and order metrics</p>
+            <h1 className={styles.headerTitle}>Analytics Dashboard</h1>
+            <p className={styles.headerSubtitle}>Track user and order metrics</p>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-3 mt-4 md:mt-0">
-            <div className="flex items-center gap-2">
-              <FiCalendar className="text-gray-500" />
+          <div className={styles.controls}>
+            <div className={styles.datePickerContainer}>
+              <FiCalendar className={styles.statIcon} />
               <DatePicker
                 selected={dateRange.start}
                 onChange={date => setDateRange({...dateRange, start: date})}
                 selectsStart
                 startDate={dateRange.start}
                 endDate={dateRange.end}
-                className="border rounded p-2"
+                className={styles.datePicker}
               />
               <span>to</span>
               <DatePicker
@@ -178,109 +163,103 @@ const users = Array.isArray(usersData) ? usersData : (usersData ? [usersData] : 
                 startDate={dateRange.start}
                 endDate={dateRange.end}
                 minDate={dateRange.start}
-                className="border rounded p-2"
+                className={styles.datePicker}
               />
             </div>
             <button
               onClick={fetchAnalyticsData}
-              className="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700"
+              className={styles.refreshButton}
+              disabled={loading}
             >
-              <FiRefreshCw className={`${loading ? 'animate-spin' : ''}`} />
+              <FiRefreshCw className={loading ? styles.spinner : ''} />
               Refresh
             </button>
           </div>
         </div>
 
         {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+          <div className={styles.errorAlert}>
             {error}
           </div>
         )}
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {/* Total Users */}
-          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-            <div className="flex items-center justify-between">
+        <div className={styles.statsGrid}>
+          <div className={styles.statCard}>
+            <div className={styles.statHeader}>
               <div>
-                <p className="text-gray-500 text-sm font-medium">Total Users</p>
-                <h3 className="text-2xl font-bold mt-1">{stats.totalUsers}</h3>
-                <p className="text-green-600 text-sm mt-1 flex items-center">
-                  <FiTrendingUp className="mr-1" />
+                <p className={styles.statTitle}>Total Users</p>
+                <h3 className={styles.statValue}>{stats.totalUsers}</h3>
+                <p className={styles.statTrend}>
+                  <FiTrendingUp className={styles.statIcon} />
                   {calculateChange(stats.totalUsers, stats.totalUsers - stats.newUsers)}% from last period
                 </p>
               </div>
-              <div className="bg-indigo-100 p-3 rounded-full">
-                <FiUsers className="text-indigo-600 text-xl" />
+              <div className={styles.statIconContainer}>
+                <FiUsers className={styles.statIcon} />
               </div>
             </div>
           </div>
 
-          {/* New Users */}
-          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-            <div className="flex items-center justify-between">
+          <div className={styles.statCard}>
+            <div className={styles.statHeader}>
               <div>
-                <p className="text-gray-500 text-sm font-medium">New Users</p>
-                <h3 className="text-2xl font-bold mt-1">{stats.newUsers}</h3>
-                <p className="text-green-600 text-sm mt-1">
+                <p className={styles.statTitle}>New Users</p>
+                <h3 className={styles.statValue}>{stats.newUsers}</h3>
+                <p className={styles.statTrend}>
                   {((stats.newUsers / stats.totalUsers) * 100 || 0).toFixed(1)}% of total
                 </p>
               </div>
-              <div className="bg-green-100 p-3 rounded-full">
-                <FiUsers className="text-green-600 text-xl" />
+              <div className={styles.statIconContainer}>
+                <FiUsers className={styles.statIcon} />
               </div>
             </div>
           </div>
 
-          {/* Total Orders */}
-          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-            <div className="flex items-center justify-between">
+          <div className={styles.statCard}>
+            <div className={styles.statHeader}>
               <div>
-                <p className="text-gray-500 text-sm font-medium">Total Orders</p>
-                <h3 className="text-2xl font-bold mt-1">{stats.totalOrders}</h3>
-                <p className="text-green-600 text-sm mt-1 flex items-center">
-                  <FiTrendingUp className="mr-1" />
+                <p className={styles.statTitle}>Total Orders</p>
+                <h3 className={styles.statValue}>{stats.totalOrders}</h3>
+                <p className={styles.statTrend}>
+                  <FiTrendingUp className={styles.statIcon} />
                   {calculateChange(stats.totalOrders, stats.totalOrders - stats.newOrders)}% from last period
                 </p>
               </div>
-              <div className="bg-purple-100 p-3 rounded-full">
-                <FiShoppingCart className="text-purple-600 text-xl" />
+              <div className={styles.statIconContainer}>
+                <FiShoppingCart className={styles.statIcon} />
               </div>
             </div>
           </div>
 
-          {/* New Orders */}
-          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-            <div className="flex items-center justify-between">
+          <div className={styles.statCard}>
+            <div className={styles.statHeader}>
               <div>
-                <p className="text-gray-500 text-sm font-medium">New Orders</p>
-                <h3 className="text-2xl font-bold mt-1">{stats.newOrders}</h3>
-                <p className="text-green-600 text-sm mt-1">
+                <p className={styles.statTitle}>New Orders</p>
+                <h3 className={styles.statValue}>{stats.newOrders}</h3>
+                <p className={styles.statTrend}>
                   {((stats.newOrders / stats.totalOrders) * 100 || 0).toFixed(1)}% of total
                 </p>
               </div>
-              <div className="bg-yellow-100 p-3 rounded-full">
-                <FiShoppingCart className="text-yellow-600 text-xl" />
+              <div className={styles.statIconContainer}>
+                <FiShoppingCart className={styles.statIcon} />
               </div>
             </div>
           </div>
         </div>
 
-        {/* Charts Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          {/* User Registrations Over Time */}
-          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-            <h3 className="text-lg font-semibold mb-4 flex items-center">
-              <FiUsers className="mr-2" />
+        <div className={styles.chartsGrid}>
+          <div className={styles.chartCard}>
+            <h3 className={styles.chartTitle}>
+              <FiUsers className={styles.statIcon} />
               User Registrations
             </h3>
             {loading ? (
-              <div className="flex justify-center items-center h-64">
-                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-indigo-500"></div>
+              <div className={styles.loader}>
+                <div className={styles.spinner}></div>
               </div>
             ) : (
               <Line
-                data={getChartData(stats.usersData, 'New Users', 'rgba(79, 70, 229, 0.6)')}
+                data={getChartData(stats.usersData, 'New Users', 'rgba(249, 176, 46, 0.6)')}
                 options={{
                   responsive: true,
                   plugins: {
@@ -301,19 +280,18 @@ const users = Array.isArray(usersData) ? usersData : (usersData ? [usersData] : 
             )}
           </div>
 
-          {/* Orders Over Time */}
-          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-            <h3 className="text-lg font-semibold mb-4 flex items-center">
-              <FiShoppingCart className="mr-2" />
+          <div className={styles.chartCard}>
+            <h3 className={styles.chartTitle}>
+              <FiShoppingCart className={styles.statIcon} />
               Order Activity
             </h3>
             {loading ? (
-              <div className="flex justify-center items-center h-64">
-                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-indigo-500"></div>
+              <div className={styles.loader}>
+                <div className={styles.spinner}></div>
               </div>
             ) : (
               <Bar
-                data={getChartData(stats.ordersData, 'New Orders', 'rgba(124, 58, 237, 0.6)')}
+                data={getChartData(stats.ordersData, 'New Orders', 'rgba(249, 176, 46, 0.6)')}
                 options={{
                   responsive: true,
                   plugins: {
@@ -335,14 +313,12 @@ const users = Array.isArray(usersData) ? usersData : (usersData ? [usersData] : 
           </div>
         </div>
 
-        {/* Additional Metrics */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* User to Order Ratio */}
-          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-            <h3 className="text-lg font-semibold mb-4">User to Order Ratio</h3>
+        <div className={styles.metricsGrid}>
+          <div className={styles.metricCard}>
+            <h3 className={styles.chartTitle}>User to Order Ratio</h3>
             {loading ? (
-              <div className="flex justify-center items-center h-64">
-                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-indigo-500"></div>
+              <div className={styles.loader}>
+                <div className={styles.spinner}></div>
               </div>
             ) : (
               <Pie
@@ -351,12 +327,12 @@ const users = Array.isArray(usersData) ? usersData : (usersData ? [usersData] : 
                   datasets: [{
                     data: [stats.totalUsers, stats.totalOrders],
                     backgroundColor: [
-                      'rgba(79, 70, 229, 0.6)',
-                      'rgba(124, 58, 237, 0.6)'
+                      'rgba(249, 176, 46, 0.6)',
+                      'rgba(220, 38, 38, 0.6)'
                     ],
                     borderColor: [
-                      'rgba(79, 70, 229, 1)',
-                      'rgba(124, 58, 237, 1)'
+                      'rgba(249, 176, 46, 1)',
+                      'rgba(220, 38, 38, 1)'
                     ],
                     borderWidth: 1
                   }]
@@ -383,30 +359,29 @@ const users = Array.isArray(usersData) ? usersData : (usersData ? [usersData] : 
             )}
           </div>
 
-          {/* Daily Averages */}
-          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 col-span-2">
-            <h3 className="text-lg font-semibold mb-4">Daily Averages</h3>
+          <div className={styles.metricCard} style={{ gridColumn: 'span 2' }}>
+            <h3 className={styles.chartTitle}>Daily Averages</h3>
             {loading ? (
-              <div className="flex justify-center items-center h-64">
-                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-indigo-500"></div>
+              <div className={styles.loader}>
+                <div className={styles.spinner}></div>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="bg-gray-50 p-4 rounded">
-                  <p className="text-gray-500 text-sm">Users per day</p>
-                  <h4 className="text-xl font-bold mt-1">
+              <div className={styles.metricsSubGrid}>
+                <div className={styles.metricItem}>
+                  <p className={styles.metricLabel}>Users per day</p>
+                  <h4 className={styles.metricValue}>
                     {(stats.newUsers / daysBetween(dateRange.start, dateRange.end)).toFixed(1)}
                   </h4>
                 </div>
-                <div className="bg-gray-50 p-4 rounded">
-                  <p className="text-gray-500 text-sm">Orders per day</p>
-                  <h4 className="text-xl font-bold mt-1">
+                <div className={styles.metricItem}>
+                  <p className={styles.metricLabel}>Orders per day</p>
+                  <h4 className={styles.metricValue}>
                     {(stats.newOrders / daysBetween(dateRange.start, dateRange.end)).toFixed(1)}
                   </h4>
                 </div>
-                <div className="bg-gray-50 p-4 rounded">
-                  <p className="text-gray-500 text-sm">Orders per user</p>
-                  <h4 className="text-xl font-bold mt-1">
+                <div className={styles.metricItem}>
+                  <p className={styles.metricLabel}>Orders per user</p>
+                  <h4 className={styles.metricValue}>
                     {(stats.totalOrders / stats.totalUsers || 0).toFixed(1)}
                   </h4>
                 </div>
@@ -419,7 +394,6 @@ const users = Array.isArray(usersData) ? usersData : (usersData ? [usersData] : 
   );
 };
 
-// Helper function to calculate days between dates
 function daysBetween(start, end) {
   const diffTime = Math.abs(end - start);
   return Math.ceil(diffTime / (1000 * 60 * 60 * 24)) || 1;
