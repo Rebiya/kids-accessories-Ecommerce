@@ -12,9 +12,10 @@ import { type } from "../../Utility/action.type";
 
 function Payment() {
   const { state: { user, basket }, dispatch } = useAuth();
-  // console.log(user)
   const [cardError, setCardError] = useState(null);
   const [processing, setProcessing] = useState(false);
+  const [expandedItem, setExpandedItem] = useState(null);
+  const [showImageModal, setShowImageModal] = useState(false);
 
   const stripe = useStripe();
   const elements = useElements();
@@ -32,127 +33,191 @@ function Payment() {
     e?.error?.message ? setCardError(e?.error?.message) : setCardError("");
   };
 
-const handlePayment = async (e) => {
-  e.preventDefault();
-  try {
-    setProcessing(true);
+  const toggleDescription = (item) => {
+    setExpandedItem(expandedItem?.id === item.id ? null : item);
+  };
 
-    // 1. Create payment intent
-    const response = await axiosInstance.post(`/payment/create?total=${total * 100}`);
-    const clientSecret = response?.data?.clientSecret;
-    if (!clientSecret) throw new Error("No client secret returned");
+  const truncateText = (text, maxLength) => {
+    if (!text) return "";
+    return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
+  };
 
-    // 2. Confirm card payment
-    const { paymentIntent, error } = await stripe.confirmCardPayment(clientSecret, {
-      payment_method: {
-        card: elements.getElement(CardElement)
+  const handlePayment = async (e) => {
+    e.preventDefault();
+    try {
+      setProcessing(true);
+
+      const response = await axiosInstance.post(`/payment/create?total=${total * 100}`);
+      const clientSecret = response?.data?.clientSecret;
+      if (!clientSecret) throw new Error("No client secret returned");
+
+      const { paymentIntent, error } = await stripe.confirmCardPayment(clientSecret, {
+        payment_method: {
+          card: elements.getElement(CardElement)
+        }
+      });
+
+      if (error) {
+        setCardError(error.message);
+        setProcessing(false);
+        return;
       }
-    });
 
-    if (error) {
-      setCardError(error.message);
-      setProcessing(false);
-      return;
-    }
+      if (paymentIntent.status !== 'succeeded') {
+        throw new Error(`Payment not completed. Status: ${paymentIntent.status}`);
+      }
 
-    if (paymentIntent.status !== 'succeeded') {
-      throw new Error(`Payment not completed. Status: ${paymentIntent.status}`);
-    }
+      const formattedBasket = basket.map(item => ({
+        product_id: item.id,
+        quantity: item.amount
+      }));
 
-    // 3. Format basket correctly for the backend
-    const formattedBasket = basket.map(item => ({
-      product_id: item.id,
-      quantity: item.amount
-    }));
-
-    // 4. Create order
-    const orderResponse = await axiosInstance.post("/order", {
-      user_id: user?.ID,
-      basket: JSON.stringify(formattedBasket),
-      amount: paymentIntent.amount / 100,
-      created: paymentIntent.created,
-      stripe_payment_id: paymentIntent.id
-    });
-  
-    console.log("Order Response:", orderResponse.data);
+      const orderResponse = await axiosInstance.post("/order", {
+        user_id: user?.ID,
+        basket: JSON.stringify(formattedBasket),
+        amount: paymentIntent.amount / 100,
+        created: paymentIntent.created,
+        stripe_payment_id: paymentIntent.id
+      });
     
-    // ✅ Updated success check
-    if (orderResponse?.data?.success) {
-      dispatch({ type: type.EMPTY_BASKET });
-      navigate("/orders", { state: { msg: "You have placed a new order" } });
-    } else {
-      throw new Error(orderResponse?.data?.message || "Failed to create order");
-    }
+      if (orderResponse?.data?.success) {
+        dispatch({ type: type.EMPTY_BASKET });
+        navigate("/orders", { state: { msg: "You have placed a new order" } });
+      } else {
+        throw new Error(orderResponse?.data?.message || "Failed to create order");
+      }
 
-  } catch (error) {
-    console.error("Payment Error:", error);
-    setCardError(error.response?.data?.message || error.message);
-  } finally {
-    setProcessing(false);
-  }
-};
+    } catch (error) {
+      console.error("Payment Error:", error);
+      setCardError(error.response?.data?.message || error.message);
+    } finally {
+      setProcessing(false);
+    }
+  };
 
   return (
     <Layout>
       <div className={classes.payment_container}>
         <div className={classes.payment_header}>
-          Checkout ({totalItem}) items
+          <h2>Checkout ({totalItem}) items</h2>
         </div>
 
-        <section className={classes.payment}>
-          <div className={classes.flex}>
-            <h3>Delivery Address</h3>
-            <div className={classes.deliver}>
-              <div>{user?.email}</div>
-              <div>Ethiopia</div>
-              <div>Addis Ababa, Legihar</div>
-              <div>{user?.phone_number}</div>
+        <div className={classes.payment_content}>
+          <section className={classes.delivery_section}>
+            <div className={classes.section_header}>
+              <h3>Delivery Address</h3>
             </div>
-          </div>
-          <hr className={classes.divider} />
+            <div className={classes.delivery_details}>
+              <p>{user?.email}</p>
+              <p>Ethiopia</p>
+              <p>Addis Ababa, Legihar</p>
+              <p>{user?.phone_number}</p>
+            </div>
+          </section>
 
-          <div className={classes.flex}>
-            <h3>Review items and delivery</h3>
-            <div className={classes.items_container}>
+          <section className={classes.items_section}>
+            <div className={classes.section_header}>
+              <h3>Review Items</h3>
+            </div>
+            <div className={classes.items_list}>
               {basket?.map((item, i) => (
-                <ProductCard key={i} product={item} flex={true} />
+                <div key={i} className={classes.item_card}>
+                  <div 
+                    className={classes.item_image}
+                    onClick={() => {
+                      setExpandedItem(item);
+                      setShowImageModal(true);
+                    }}
+                  >
+                    <img src={item.image} alt={item.title} />
+                  </div>
+                  <div className={classes.item_details}>
+                    <h4>{item.title}</h4>
+                    <p className={classes.price}><CurrencyFormat amount={item.price} /></p>
+                    <p className={classes.quantity}>Quantity: {item.amount}</p>
+                    {item.description && (
+                      <div className={classes.description_container}>
+                        <p className={classes.description}>
+                          {expandedItem?.id === item.id 
+                            ? item.description 
+                            : truncateText(item.description, window.innerWidth < 768 ? 200 : 300)
+                          }
+                        </p>
+                        {item.description.length > (window.innerWidth < 768 ? 200 : 300) && (
+                          <button 
+                            onClick={() => toggleDescription(item)}
+                            className={classes.see_more}
+                          >
+                            {expandedItem?.id === item.id ? 'Show less' : 'Show more'}
+                          </button>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </div>
               ))}
             </div>
-          </div>
-          <hr className={classes.divider} />
+          </section>
 
-          <div className={classes.flex}>
-            <h3>Payment Method</h3>
-            <div className={classes.payment_card_container}>
-              <div className={classes.payment_details}>
-                <form onSubmit={handlePayment}>
-                  {cardError && (
-                    <small className={classes.error}>{cardError}</small>
-                  )}
+          <section className={classes.payment_section}>
+            <div className={classes.section_header}>
+              <h3>Payment Method</h3>
+            </div>
+            <div className={classes.payment_card}>
+              <form onSubmit={handlePayment}>
+                {cardError && (
+                  <div className={classes.error_message}>{cardError}</div>
+                )}
+                <div className={classes.card_element_container}>
                   <CardElement className={classes.card_element} onChange={handleChange} />
-                  <div className={classes.payment_price}>
-                    <div className={classes.total_container}>
-                      <span>
-                        <p>Total Order |</p> 
-                        <CurrencyFormat amount={total} />
-                      </span>
-                    </div>
-                    <button type="submit" disabled={processing}>
-                      {processing ? (
-                        <div className={classes.loading}>
-                          <ClipLoader color="gray" size={12} />
-                          <p>Please wait ...</p>
-                        </div>
-                      ) : (
-                        "Pay Now"
-                      )}
-                    </button>
+                </div>
+                <div className={classes.payment_summary}>
+                  <div className={classes.order_total}>
+                    <span>Order Total:</span>
+                    <span className={classes.total_amount}><CurrencyFormat amount={total} /></span>
                   </div>
-                </form>
+                  <button 
+                    type="submit" 
+                    disabled={processing}
+                    className={classes.pay_button}
+                  >
+                    {processing ? (
+                      <div className={classes.loading}>
+                        <ClipLoader color="#fff" size={16} />
+                        <span>Processing Payment</span>
+                      </div>
+                    ) : (
+                      "Pay Now"
+                    )}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </section>
+        </div>
+
+        {/* Image Modal */}
+        {showImageModal && expandedItem && (
+          <div className={classes.image_modal} onClick={() => setShowImageModal(false)}>
+            <div className={classes.modal_content} onClick={(e) => e.stopPropagation()}>
+              <button 
+                className={classes.close_modal}
+                onClick={() => setShowImageModal(false)}
+              >
+                &times;
+              </button>
+              <img 
+                src={expandedItem.image} 
+                alt={expandedItem.title} 
+                className={classes.modal_image}
+              />
+              <div className={classes.modal_description}>
+                <h3>{expandedItem.title}</h3>
+                <p>{expandedItem.description}</p>
               </div>
             </div>
           </div>
-        </section>
+        )}
       </div>
     </Layout>
   );

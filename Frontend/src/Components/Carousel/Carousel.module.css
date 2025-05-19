@@ -1,3 +1,4 @@
+/* Mobile-first styles */
 .CarouselEffect {
   background-color: #ffffff;
   position: relative;
@@ -6,10 +7,16 @@
   overflow: hidden;
 }
 
-.CarouselEffect img {
-  width: 1350px;
-  height: 530px;
-  object-fit: cover; /* This will ensure the image covers the area while maintaining aspect ratio */
+.CarouselEffect .imageContainer {
+  width: 100%;
+  height: 200px; /* Smaller height for mobile */
+  overflow: hidden;
+}
+
+.CarouselEffect .imageContainer img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .fade {
@@ -17,7 +24,7 @@
   bottom: 0;
   left: 0;
   width: 100%;
-  height: 300px;
+  height: 100px; /* Smaller fade for mobile */
   z-index: 1;
   pointer-events: none;
 }
@@ -31,14 +38,45 @@
   height: 100%;
   background: linear-gradient(to top, white, rgba(0, 0, 0, 0));
 }
-.CarouselEffect .imageContainer {
-  width: 1350px;
-  height: 530px;
-  overflow: hidden;
+
+/* Tablet styles (768px and up) */
+@media (min-width: 768px) {
+  .CarouselEffect .imageContainer {
+    height: 350px;
+  }
+
+  .fade {
+    height: 150px;
+  }
 }
 
-.CarouselEffect .imageContainer img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+/* Small desktop styles (1024px and up) */
+@media (min-width: 1024px) {
+  .CarouselEffect .imageContainer {
+    height: 450px;
+  }
+
+  .fade {
+    height: 200px;
+  }
+}
+
+/* Large desktop styles (1350px and up) */
+@media (min-width: 1350px) {
+  .CarouselEffect .imageContainer {
+    height: 530px;
+    max-width: 1350px;
+    margin: 0 auto;
+  }
+
+  .CarouselEffect .imageContainer img {
+    width: 1350px;
+  }
+
+  .fade {
+    height: 300px;
+    max-width: 1350px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
 }

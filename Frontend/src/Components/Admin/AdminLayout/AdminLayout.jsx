@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { 
   FiUsers, FiTag, FiShoppingBag, FiPieChart, FiShoppingCart,
-  FiPlus, FiX, FiLogOut
+  FiX, FiLogOut, FiMenu, FiChevronLeft, FiChevronRight
 } from 'react-icons/fi';
 import './AdminLayout.css';
 
 const AdminLayout = () => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -23,25 +24,56 @@ const AdminLayout = () => {
     return location.pathname === path;
   };
 
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 768) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const handleSidebarToggle = () => {
+    if (window.innerWidth < 768) {
+      setIsMobileMenuOpen(!isMobileMenuOpen);
+    } else {
+      setIsSidebarCollapsed(!isSidebarCollapsed);
+    }
+  };
+
+  const closeMobileMenu = () => {
+    if (window.innerWidth < 768) {
+      setIsMobileMenuOpen(false);
+    }
+  };
+
   return (
     <div className="admin-layout">
+      {/* Mobile Menu Toggle Button */}
+      {window.innerWidth < 768 && (
+        <button 
+          className="mobile-menu-toggle"
+          onClick={handleSidebarToggle}
+          aria-label="Toggle menu"
+        >
+          {isMobileMenuOpen ? <FiX /> : <FiMenu />}
+        </button>
+      )}
+
       {/* Sidebar */}
       <div 
-        className={`admin-sidebar slide-in ${isSidebarCollapsed ? 'collapsed' : 'expanded'}`}
+        className={`admin-sidebar ${isSidebarCollapsed ? 'collapsed' : 'expanded'} ${isMobileMenuOpen ? 'visible' : ''}`}
       >
         <div className="sidebar-header">
-          {!isSidebarCollapsed && (
-            <h2 className="sidebar-title">Admin Panel</h2>
-          )}
+          <h2 className="sidebar-title">Admin Panel</h2>
           <button 
-            onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+            onClick={handleSidebarToggle}
             className="collapse-button"
+            aria-label="Collapse sidebar"
           >
-            {isSidebarCollapsed ? (
-              <FiPlus className="transform rotate-45" />
-            ) : (
-              <FiX />
-            )}
+            {isSidebarCollapsed ? <FiChevronRight /> : <FiChevronLeft />}
           </button>
         </div>
         
@@ -52,11 +84,14 @@ const AdminLayout = () => {
               return (
                 <li key={tab.id} className="nav-item">
                   <button
-                    onClick={() => navigate(tab.path)}
+                    onClick={() => {
+                      navigate(tab.path);
+                      closeMobileMenu();
+                    }}
                     className={`nav-button ${isActiveTab(tab.path) ? 'active' : ''}`}
                   >
                     <Icon className="nav-icon" />
-                    {!isSidebarCollapsed && <span className="nav-label">{tab.label}</span>}
+                    <span className="nav-label">{tab.label}</span>
                   </button>
                 </li>
               );
@@ -70,13 +105,13 @@ const AdminLayout = () => {
             className="logout-button"
           >
             <FiLogOut className="nav-icon" />
-            {!isSidebarCollapsed && <span className="nav-label">Logout</span>}
+            <span className="nav-label">Logout</span>
           </button>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className={`main-content ${isSidebarCollapsed ? 'collapsed' : 'expanded'}`}>
+      <div className={`main-content ${isSidebarCollapsed ? 'collapsed' : 'expanded'} ${isMobileMenuOpen ? 'shifted' : ''}`}>
         <div className="content-container">
           <Outlet />
         </div>

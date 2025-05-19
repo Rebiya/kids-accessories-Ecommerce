@@ -9,6 +9,7 @@ const productRouter = require("./Product.route.js");
 const categoryRouter = require("./Category.route.js");
 const orderRouter = require("./Order.route.js"); 
 const stripeRouter = require("./Stripe.route.js");
+const aiRouter = require("./ai.routes.js");
 
 // Use the imported routers with correct paths
 router.use(ForgotPassRouter);
@@ -20,5 +21,6 @@ router.use(productRouter);
 router.use(categoryRouter);
 router.use(orderRouter);
 router.use(stripeRouter);
+router.use(aiRouter);
 
 module.exports = router;

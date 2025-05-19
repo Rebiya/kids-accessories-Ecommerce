@@ -1,12 +1,12 @@
 .footer {
-  background-color: #fdf9f9; /* Pure black background */
-  color: #FFD700; /* Bright gold text */
+  background-color: #fdf9f9;
+  color: #FFD700;
   padding-top: 30px;
   font-family: 'Amazon Ember', Arial, sans-serif;
 }
 
 .footer__backToTop {
-  background-color: #1a1515; /* Slightly deeper gold on hover */
+  background-color: #1a1515;
   color: #F9B02E;
   text-align: center;
   padding: 15px 0;
@@ -16,9 +16,8 @@
 }
 
 .footer__backToTop:hover {
-  background-color: #F9B02E; /* Bright gold button */
-  color: #1d0202; /* Black text */
-
+  background-color: #F9B02E;
+  color: #1d0202;
 }
 
 .footer__main {
@@ -33,13 +32,14 @@
 .footer__section {
   margin-bottom: 20px;
   min-width: 200px;
+  flex: 1 1 100%; /* Full width on mobile by default */
 }
 
 .footer__section h3 {
   font-size: 16px;
   font-weight: 700;
   margin-bottom: 10px;
-  color: #080700; /* Bright gold */
+  color: #080700;
 }
 
 .footer__section ul {
@@ -51,17 +51,17 @@
 .footer__section ul li {
   font-size: 14px;
   margin-bottom: 10px;
-  color: #070707; /* Light gray for readability */
+  color: #070707;
   cursor: pointer;
 }
 
 .footer__section ul li:hover {
   text-decoration: underline;
-  color: #F9B02E; /* Bright gold on hover */
+  color: #F9B02E;
 }
 
 .footer__bottom {
-  border-top: 1px solid #FFD700; /* Gold border */
+  border-top: 1px solid #FFD700;
   padding: 20px 0;
   text-align: center;
 }
@@ -78,8 +78,8 @@
   color: #999;
 }
 
-/* Responsive styles */
-@media (max-width: 768px) {
+/* Mobile (default) - 1 column */
+@media (max-width: 600px) {
   .footer__main {
     flex-direction: column;
     align-items: center;
@@ -88,5 +88,25 @@
 
   .footer__section {
     margin-bottom: 30px;
+    width: 100%;
+    text-align: center;
+  }
+}
+
+/* Tablet - 2 columns */
+@media (min-width: 601px) and (max-width: 900px) {
+  .footer__section {
+    flex: 1 1 45%; /* Two columns with some spacing */
+    max-width: 45%;
+    text-align: left;
+  }
+}
+
+/* Desktop - 4 columns */
+@media (min-width: 901px) {
+  .footer__section {
+    flex: 1 1 20%; /* Four equal columns */
+    max-width: 20%;
+    text-align: left;
   }
 }

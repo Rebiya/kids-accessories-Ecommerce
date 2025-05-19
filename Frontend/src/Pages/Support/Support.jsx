@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styles from './Support.module.css';
 import { FaHeadset, FaEnvelope, FaPhone, FaInfoCircle, FaRobot } from 'react-icons/fa';
 import { RiSendPlaneFill } from 'react-icons/ri';
+import { askAI } from '../../Services/MistralAi';  // Import the service
 
 const Support = () => {
   const [activeTab, setActiveTab] = useState('ai');
@@ -11,25 +12,22 @@ const Support = () => {
   ]);
   const [email, setEmail] = useState('');
   const [contactMessage, setContactMessage] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleAiSubmit = (e) => {
+  const handleAiSubmit = async (e) => {
     e.preventDefault();
     if (!aiMessage.trim()) return;
-    
+
     // Add user message
     setMessages([...messages, { sender: 'user', text: aiMessage }]);
-    
-    // Simulate AI response
-    setTimeout(() => {
-      setMessages(prev => [
-        ...prev,
-        { 
-          sender: 'ai', 
-          text: 'Thanks for your question! I can help with order tracking, product recommendations, and general inquiries. Could you provide more details?' 
-        }
-      ]);
-    }, 1000);
-    
+    setLoading(true);
+
+    // Call AI API service
+    const reply = await askAI(aiMessage);
+
+    // Add AI response
+    setMessages(prev => [...prev, { sender: 'ai', text: reply }]);
+    setLoading(false);
     setAiMessage('');
   };
 
@@ -88,8 +86,9 @@ const Support = () => {
                 onChange={(e) => setAiMessage(e.target.value)}
                 placeholder="Ask me anything about our products..."
                 className={styles.aiInput}
+                disabled={loading}
               />
-              <button type="submit" className={styles.aiSubmit}>
+              <button type="submit" className={styles.aiSubmit} disabled={loading}>
                 <RiSendPlaneFill />
               </button>
             </form>

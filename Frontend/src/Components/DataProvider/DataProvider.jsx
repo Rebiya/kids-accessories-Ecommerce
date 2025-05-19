@@ -23,6 +23,7 @@ export const DataProvider = ({ children, reducer, initialState }) => {
       const token = localStorage.getItem('token');
       const user = JSON.parse(localStorage.getItem('user'));
 
+
       if (token && validateToken(token)) {
         dispatch({
           type: type.INITIALIZE_AUTH,
