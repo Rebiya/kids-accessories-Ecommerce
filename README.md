@@ -63,8 +63,6 @@ We use **Together.AI’s Mistral model** to power an interactive AI assistant. I
 
 ---
 
----
-
 ## 🧪 Scripts
 
 ### Frontend
