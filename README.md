@@ -1,6 +1,6 @@
 # 👶 Amazon Clone for Fresh Mothers – Kids Accessories & AI Support System
 
-This is a full-stack **e-commerce web application** aimed at supporting **new mothers** by offering essential baby products, maternal care items, and **AI-based support** for child growth guidance. The application features both frontend and backend in a single repository.
+This is a full-stack **e-commerce web application** aimed at supporting **new mothers** by offering essential baby products, maternal care items, and **AI-based support** for child growth guidance. 
 
 ---
 
@@ -23,7 +23,7 @@ Built with **React** & styled using **Tailwind CSS**, **Bootstrap**, and **Mater
 - Vite for blazing-fast development
 - React Router for navigation
 - React Query for data management
-- Firebase for authentication
+- JWT for authentication
 - Stripe for payment integration
 - Fuse.js for fuzzy product search
 - Chart.js for analytics
@@ -62,9 +62,6 @@ We use **Together.AI’s Mistral model** to power an interactive AI assistant. I
 - 💬 Contact us form and live support
 
 ---
-
-
-> **Note**: Frontend and backend share the same repository. Use `npm run dev` from respective directories for local development.
 
 ---
 
