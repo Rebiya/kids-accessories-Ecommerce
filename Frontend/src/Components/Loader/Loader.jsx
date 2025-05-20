@@ -9,7 +9,7 @@ const Loader = () => {
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
-        height: "60vh", 
+        height: "50vh", 
         width: "100vw",
         position: "fixed", 
         top: 0,

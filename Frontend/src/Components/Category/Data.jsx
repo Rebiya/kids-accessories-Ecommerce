@@ -1,7 +1,7 @@
 const Data = [
   {
     id: 1,
-    title: "Baby Nail Care Kit",
+    title: "Baby Essentials",
     price: 15.99,
     description:
       "This complete baby nail care set includes all the essentials for safe and stress-free nail trimming. The kit features a baby-sized nail clipper with rounded safety tips, a fine-grit emery board, and baby nail scissors with blunt tips. All tools have smooth, rounded edges to prevent accidental scratches. The stainless-steel implements are durable and maintain sharp edges through years of use. The compact case keeps everything organized and portable for home or travel use. All components meet international safety standards for baby products. Makes an excellent baby shower gift for expecting parents. The high-quality materials ensure this set will last through multiple children. An essential kit for maintaining baby's hygiene and preventing scratches to delicate skin.",
@@ -43,10 +43,10 @@ const Data = [
   },
   {
     id: 4,
-    title: "DANVOUY Womens T Shirt Casual Cotton Short",
+    title: "Clothing",
     price: 12.99,
     description:
-      "95%Cotton,5%Spandex, Features: Casual, Short Sleeve, Letter Print,V-Neck,Fashion Tees, The fabric is soft and has some stretch., Occasion: Casual/Office/Beach/School/Home/Street. Season: Spring,Summer,Autumn,Winter.",
+      "Premium quality baby mattress made with hypoallergenic materials and breathable cotton filling. Provides optimal support for growing babies with firmness designed for infant safety. Waterproof cover protects against spills and accidents while remaining soft to the touch. Meets all safety standards for crib mattresses with perfect dimensions for standard cribs. The lightweight design makes it easy to change sheets and transport. The mattress is free from harmful chemicals and toxins, ensuring a safe sleep environment. The removable cover is machine washable for easy cleaning. This mattress is designed to grow with your baby, providing comfort and support from infancy through toddlerhood. An essential item for any nursery, this mattress is a must-have for new parents.",
     category: "women's clothing",
     image: "https://5.imimg.com/data5/WF/ZW/NT/SELLER-29755055/baby-towel-500x500.png",
     rating: {

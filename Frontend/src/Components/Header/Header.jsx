@@ -51,12 +51,12 @@ const Header = () => {
       setCategories([
         { id: 1, name: "Baby Essentials", icon: <FaBaby />, path: "/category/Baby Essentials" },
         { id: 2, name: "Health & Hygiene", icon: <MdHealthAndSafety />, path: "/category/Health & Hygiene" },
-        { id: 3, name: "Toys & Education", icon: <FaChild />, path: "/category/Toys & Education" },
-        { id: 4, name: "Clothing", icon: <BsPerson />, path: "/category/clothing" },
-        { id: 5, name: "Nursery & Home", icon: <FaHome />, path: "/category/Nursery & Home" },
+        { id: 3, name: "Toys & Education", icon: <FaChild />, path: "/category/Toys" },
+        { id: 4, name: "Clothing", icon: <BsPerson />, path: "/category/Clothing & Accessories" },
+        { id: 5, name: "Nursery & Home", icon: <FaHome />, path: "/category/Nursery & Home Care" },
         { id: 6, name: "Feeding & Nursing", icon: <FaUtensils />, path: "/category/Feeding & Nursing" },
-        { id: 7, name: "Mom's Support", icon: <MdSupport />, path: "/category/Mom's Support" },
-        { id: 8, name: "Travel & Outdoor", icon: <FaSuitcase />, path: "/category/Travel & Outdoor" }
+        { id: 7, name: "Mom's Support", icon: <MdSupport />, path: "/category/Mom's Support Items" },
+        { id: 8, name: "Travel & Outdoor", icon: <FaSuitcase />, path: "/category/Travel & Outdoor Gear" }
       ]);
     };
     
