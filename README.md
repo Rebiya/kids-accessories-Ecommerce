@@ -1,8 +1,3 @@
-Here’s a professional and informative `README.md` file for your full-stack project that combines both frontend and backend in a single GitHub repository. It highlights your stack, features, AI support system, and purpose clearly:
-
----
-
-```markdown
 # 👶 Amazon Clone for Fresh Mothers – Kids Accessories & AI Support System
 
 This is a full-stack **e-commerce web application** aimed at supporting **new mothers** by offering essential baby products, maternal care items, and **AI-based support** for child growth guidance. The application features both frontend and backend in a single repository.
@@ -68,27 +63,6 @@ We use **Together.AI’s Mistral model** to power an interactive AI assistant. I
 
 ---
 
-## 📦 Project Structure
-
-```
-
-/amazon-clone
-│
-├── frontend/
-│   ├── public/
-│   ├── src/
-│   └── vite.config.js
-│
-├── backend/
-│   ├── Index.js
-│   ├── routes/
-│   ├── controllers/
-│   └── config/
-│
-├── .env
-└── package.json
-
-````
 
 > **Note**: Frontend and backend share the same repository. Use `npm run dev` from respective directories for local development.
 
@@ -102,45 +76,14 @@ We use **Together.AI’s Mistral model** to power an interactive AI assistant. I
 npm run dev       # Run frontend development server
 npm run build     # Build for production
 npm run preview   # Preview production build
-````
 
-### Backend
 
-```bash
 npm run dev       # Start backend with nodemon
 npm start         # Start backend normally
-```
 
----
 
-## 🛒 Live Demo
+🛒 Live Demo :
 
-(Coming Soon)
+❤️ Special Thanks
+Thanks to Together.AI for providing access to the Mistral model API and enabling intelligent parenting support.
 
----
-
-## 📬 Contact
-
-If you have any questions, feedback, or partnership inquiries:
-
-📧 Email: \[[your-email@example.com](mailto:your-email@example.com)]
-🌐 Website: \[your-website.com]
-
----
-
-## 📄 License
-
-This project is licensed under the [MIT License](LICENSE).
-
----
-
-## ❤️ Special Thanks
-
-Thanks to **Together.AI** for providing access to the Mistral model API and enabling intelligent parenting support.
-
----
-
-```
-
-Let me know if you want the AI integration usage instructions (like how to call the API) or want this `README.md` auto-generated and pushed to your GitHub repo.
-```
