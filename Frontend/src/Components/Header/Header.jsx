@@ -10,7 +10,7 @@ import styles from "./Header.module.css";
 import { Form } from "react-bootstrap";
 import { useAuth } from "../DataProvider/DataProvider";
 import { auth } from "../../Utility/firebase";
-import logo from "../../assets/images/download_mask.png";
+import logo from "../../assets/images/golden.png";
 import { ProductService } from "../../Services/Product.Service";
 import Fuse from 'fuse.js';
 

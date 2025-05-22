@@ -188,33 +188,6 @@ const MyAccount = () => {
             </button>
           </form>
         </div>
-
-        {/* Account Actions */}
-        <div className={styles.actionsSection}>
-          <div className={styles.sectionHeader}>
-            <h2>Account Actions</h2>
-          </div>
-          <div className={styles.actionsGrid}>
-            <button className={styles.actionButton}>
-              Order History
-            </button>
-            <button className={styles.actionButton}>
-              Saved Addresses
-            </button>
-            <button className={styles.actionButton}>
-              Payment Methods
-            </button>
-            <button className={styles.actionButton}>
-              Wishlist
-            </button>
-            <button className={styles.actionButtonDanger}>
-              Deactivate Account
-            </button>
-            <button className={styles.actionButtonDanger}>
-              Delete Account
-            </button>
-          </div>
-        </div>
       </div>
     </div>
   );

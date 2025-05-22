@@ -1,22 +1,124 @@
+/* Luxurious Gold & Light Theme */
+:root {
+  --gold-dark: #d4a017;
+  --gold-primary: #F9B02E;
+  --gold-light: #f8e8c0;
+  --gold-hover: #e6a429;
+  --gold-shadow: rgba(249, 176, 46, 0.3);
+  --white: #ffffff;
+  --off-white: #f9f9f9;
+  --light-gray: #eaeaea;
+  --dark-text: #333333;
+  --error-color: #e63946;
+  --error-bg: #ffecec;
+}
+
+.starBackground {
+  position: relative;
+  min-height: 60vh;
+  background-color: var(--off-white);
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem 0;
+}
+
+.star {
+  position: absolute;
+  background-color: var(--gold-primary);
+  border-radius: 50%;
+  opacity: 1;
+  animation: float linear infinite;
+  z-index: 0;
+  filter: drop-shadow(0 0 8px var(--gold-primary));
+}
+
+/* Massive stars with varying sizes */
+.star:nth-child(1) { width: 32px; height: 32px; }
+.star:nth-child(2) { width: 35px; height: 35px; }
+.star:nth-child(3) { width: 38px; height: 8px; }
+.star:nth-child(4) { width: 38px; height: 38px; }
+.star:nth-child(5) { width: 40px; height: 40px; }
+.star:nth-child(6) { width: 34px; height: 34px; }
+
+/* Star positions and animations */
+.star:nth-child(1) {
+  left: 10%;
+  animation-duration: 25s;
+  animation-delay: 0s;
+}
+.star:nth-child(2) {
+  left: 30%;
+  animation-duration: 30s;
+  animation-delay: 1s;
+}
+.star:nth-child(3) {
+  left: 60%;
+  animation-duration: 20s;
+  animation-delay: 2s;
+}
+.star:nth-child(4) {
+  left: 80%;
+  animation-duration: 35s;
+  animation-delay: 3s;
+}
+.star:nth-child(5) {
+  left: 45%;
+  animation-duration: 28s;
+  animation-delay: 3s;
+}
+.star:nth-child(6) {
+  left: 20%;
+  animation-duration: 22s;
+  animation-delay: 4s;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(100vh) translateX(0) rotate(0deg);
+    opacity: 1;
+  }
+  20% {
+    opacity: 0.8;
+  }
+  50% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateY(-20vh) translateX(100px) rotate(180deg);
+    opacity: 0;
+  }
+}
+
 .signupContainer {
-  max-width: 500px;
-  margin: 2rem auto;
+  max-width: 420px;
+  width: 90%;
   padding: 2rem;
-  background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin: 2rem auto;
+  background-color: var(--white);
+  border-radius: 16px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+  position: relative;
+  z-index: 1;
+  border: 1px solid var(--light-gray);
 }
 
 .signupHeader {
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 
 .signupHeader h1 {
-  color: #000000;
-  font-size: 2rem;
-  margin-bottom: 1rem;
+  color: var(--gold-primary);
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
   font-weight: 600;
+  font-family: 'Playfair Display', serif;
+  letter-spacing: 1px;
 }
 
 .signupForm {
@@ -32,77 +134,109 @@
 }
 
 .formGroup label {
-  color: #000000;
-  font-size: 0.9rem;
+  color: var(--dark-text);
+  font-size: 0.95rem;
   font-weight: 500;
+  letter-spacing: 0.3px;
 }
 
 .formGroup input {
-  padding: 0.8rem;
-  border: 1px solid #d1d5db;
-  border-radius: 4px;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--light-gray);
+  border-radius: 8px;
   font-size: 1rem;
   transition: all 0.3s ease;
+  background-color: var(--white);
+  color: var(--dark-text);
 }
 
 .formGroup input:focus {
   outline: none;
-  border-color: #d4af37;
-  box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+  border-color: var(--gold-primary);
+  box-shadow: 0 0 0 3px var(--gold-shadow);
 }
 
 .submitButton {
-  background-color: #d4af37;
-  color: #000000;
-  padding: 0.8rem;
+  background: linear-gradient(135deg, var(--gold-primary), var(--gold-dark));
+  color: var(--white);
+  padding: 1rem;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  margin-top: 1rem;
+  margin-top: 0.5rem;
+  box-shadow: 0 4px 15px var(--gold-shadow);
+  letter-spacing: 1px;
 }
 
 .submitButton:hover {
-  background-color: #c9a227;
-}
-
-.submitButton:disabled {
-  background-color: #e5e7eb;
-  cursor: not-allowed;
+  background: linear-gradient(135deg, var(--gold-hover), var(--gold-dark));
+  box-shadow: 0 6px 20px var(--gold-shadow);
+  transform: translateY(-2px);
 }
 
 .errorMessage {
-  color: #ef4444;
-  background-color: #fee2e2;
+  color: var(--error-color);
+  background-color: var(--error-bg);
   padding: 0.8rem;
-  border-radius: 4px;
-  margin-bottom: 1rem;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
   text-align: center;
   font-size: 0.9rem;
+  border: 1px solid rgba(230, 57, 70, 0.2);
 }
 
 .loginRedirect {
   text-align: center;
   margin-top: 1.5rem;
-  color: #4b5563;
+  color: var(--dark-text);
+  font-size: 0.95rem;
 }
 
 .loginLink {
-  color: #d4af37;
-  font-weight: 500;
+  color: var(--gold-primary);
+  font-weight: 600;
   text-decoration: none;
+  transition: all 0.2s ease;
 }
 
 .loginLink:hover {
+  color: var(--gold-dark);
   text-decoration: underline;
 }
 
-/* Responsive adjustments */
+/* Responsive Adjustments */
 @media (max-width: 600px) {
   .signupContainer {
-    margin: 1rem;
-    padding: 1.5rem;
+    padding: 2rem;
+    margin: 3rem auto;
+  }
+  
+  .signupHeader h1 {
+    font-size: 2.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .signupContainer {
+    padding: 1.8rem;
+    margin: 2rem auto;
+  }
+  
+  .signupHeader h1 {
+    font-size: 2rem;
+  }
+  
+  .star {
+    /* Slightly smaller stars on mobile */
+    width: 30px !important;
+    height: 30px !important;
+  }
+  
+  .star:nth-child(4) {
+    width: 30px !important;
+    height: 30px !important;
   }
 }
