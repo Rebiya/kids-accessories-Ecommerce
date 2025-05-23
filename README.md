@@ -1,4 +1,4 @@
-# 👶 Amazon Clone for Fresh Mothers – Kids Accessories & AI Support System
+# 👶 Kids Accessories & AI Support System
 
 This is a full-stack **e-commerce web application** built to support **new mothers** by providing essential baby products, maternal care items, and an **AI-powered parenting assistant**.
 
