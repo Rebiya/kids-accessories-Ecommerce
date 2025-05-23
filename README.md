@@ -1,84 +1,84 @@
 # 👶 Amazon Clone for Fresh Mothers – Kids Accessories & AI Support System
 
-This is a full-stack **e-commerce web application** aimed at supporting **new mothers** by offering essential baby products, maternal care items, and **AI-based support** for child growth guidance. 
+This is a full-stack **e-commerce web application** built to support **new mothers** by providing essential baby products, maternal care items, and an **AI-powered parenting assistant**.
+
+🎥 **Video Demo**: [Watch on YouTube](https://youtu.be/Y3R7-EHfLJ8?si=pg7Uf_KqdrJMgWvX)
 
 ---
 
 ## 🧠 Purpose
 
-Becoming a new mother can be overwhelming. This app helps bridge the knowledge gap by offering:
+Becoming a new mother can be overwhelming. This platform bridges the gap with:
 
-- **AI Support System** powered by **Together.AI's Mistral Model**: Ask real-time questions and get parenting tips, product suggestions, and baby care advice.
-- **Online Shopping for Baby & Mom**: Buy pampers, accessories, and mother-care products with ease.
-- **Direct Contact Support**: Chat or reach out to us directly if AI isn't enough.
-- **Highly Responsive UI**: Seamless experience across all devices.
+- 🤖 **AI Parenting Assistant** – Powered by **Together.AI's Mistral Model** for real-time parenting tips, product suggestions, and baby care advice.  
+- 🛍️ **Mom & Baby Shop** – Purchase diapers, baby gear, and mother-care items with ease.  
+- 💬 **Live Support** – Connect with a human when AI isn't enough.  
+- 📱 **Responsive UI** – Optimized for all devices.
 
 ---
 
 ## 🛠 Tech Stack
 
 ### 🔹 Frontend
-Built with **React** & styled using **Tailwind CSS**, **Bootstrap**, and **Material UI**.
 
-- Vite for blazing-fast development
-- React Router for navigation
-- React Query for data management
-- JWT for authentication
-- Stripe for payment integration
-- Fuse.js for fuzzy product search
-- Chart.js for analytics
-- Framer Motion for animations
+Built with **React** and styled using:
+
+- 🌀 **Tailwind CSS**
+- 🧩 **Bootstrap**
+- 🖌️ **Material UI**
+
+Additional Tools:
+- ⚡ **Vite** – Fast build tool
+- 🔀 **React Router** – Routing
+- 🔄 **React Query** – Data fetching & caching
+- 🔐 **JWT** – Authentication
+- 💳 **Stripe** – Payment integration
+- 🔍 **Fuse.js** – Smart fuzzy search
+- 📊 **Chart.js** – Analytics & visualizations
+- 🎞️ **Framer Motion** – Smooth animations
+
+---
 
 ### 🔸 Backend
-Built using **Express.js** and **Node.js**.
 
-- MySQL as the database
-- Firebase Admin SDK
-- Stripe API for secure payments
-- JWT-based authentication
-- .env for environment variable management
+Built using **Node.js** and **Express.js**.
+
+- 🗃️ **MySQL** – Relational database
+- 🔥 **Firebase Admin SDK** – Authentication & storage
+- 💳 **Stripe API** – Secure transactions
+- 🔐 **JWT** – User authentication
+- 🛠️ **dotenv** – Environment variable management
 
 ---
 
 ## 🤖 AI Integration
 
-We use **Together.AI’s Mistral model** to power an interactive AI assistant. It helps mothers:
+The AI assistant uses **Together.AI’s Mistral model** to help new mothers:
 
-- Understand what to expect post-birth
-- Get personalized advice on baby care and products
-- Learn what is best for their child’s growth
-- Receive support 24/7 without needing to wait for human agents
+- Understand postpartum stages
+- Get personalized parenting/product advice
+- Learn child growth best practices
+- Receive **24/7** real-time support
 
 ---
 
 ## 🚀 Features
 
-- 🔍 Smart product search
-- 🛒 Cart & Checkout system with Stripe
-- 🧠 AI chatbot for parenting support
-- 🧾 Order tracking & account management
-- 📱 Fully responsive mobile-friendly design
-- 🔐 Secure login/signup with Firebase
-- 💬 Contact us form and live support
+- 🔍 **Fuzzy Product Search** with Fuse.js  
+- 🛒 **Cart & Checkout** powered by Stripe  
+- 🧠 **AI Chatbot** for parenting guidance  
+- 🔐 **Secure Login/Signup** via Firebase  
+- 📦 **Order Tracking & Account Management**  
+- 📱 **Mobile-First Responsive Design**  
+- 💬 **Live Contact Form & Direct Support**
 
 ---
 
-## 🧪 Scripts
+## 📦 Scripts
 
-### Frontend
+### 🔧 Frontend
 
 ```bash
-npm run dev       # Run frontend development server
-npm run build     # Build for production
-npm run preview   # Preview production build
-
-
-npm run dev       # Start backend with nodemon
-npm start         # Start backend normally
-
-
-🛒 Live Demo :
-
-❤️ Special Thanks
-Thanks to Together.AI for providing access to the Mistral model API and enabling intelligent parenting support.
-
+npm run dev        # Start frontend development server
+npm run build      # Build frontend for production
+npm run preview    # Preview production build
