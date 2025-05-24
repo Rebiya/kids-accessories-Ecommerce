@@ -6,7 +6,7 @@ import { FiEdit, FiTrash2, FiPlus, FiSearch, FiX, FiUser, FiLock, FiMail, FiPhon
 import { motion, AnimatePresence } from 'framer-motion';
 import styles from './UserDashboard.module.css';
 
-const API_BASE_URL = 'http://localhost:3000/api';
+const API_BASE_URL = 'http://44.202.218.119:3000/api';
 
 const UserDashboard = () => {
   const [users, setUsers] = useState([]);

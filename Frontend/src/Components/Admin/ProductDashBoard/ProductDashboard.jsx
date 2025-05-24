@@ -16,8 +16,8 @@ const CLOUDINARY_CLOUD_NAME = 'dvpyg28pe';
 const CLOUDINARY_UPLOAD_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
 
 // API base URLs
-const PRODUCT_API_URL = 'http://localhost:3000/api/product';
-const CATEGORY_API_URL = 'http://localhost:3000/api/category';
+const PRODUCT_API_URL = 'http://44.202.218.119:3000/api/product';
+const CATEGORY_API_URL = 'http://44.202.218.119:3000/api/category';
 
 const DeleteConfirmationModal = ({ isOpen, onCancel, onConfirm, itemName }) => {
   return (

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 
-const API_BASE_URL = "http://localhost:3000/api";
+const API_BASE_URL = "http://44.202.218.119:3000/api";
 
 // Login function (existing)
 export const login = async (email, password) => {

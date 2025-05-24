@@ -6,7 +6,7 @@ import { FiEdit2, FiTrash2, FiPlus, FiX, FiCheck, FiSearch } from 'react-icons/f
 import { motion, AnimatePresence } from 'framer-motion';
 import './Category.css';
 
-const API_BASE_URL = 'http://localhost:3000/api';
+const API_BASE_URL = 'http://44.202.218.119:3000/api';
 
 const CategoryDashboard = () => {
   const [categories, setCategories] = useState([]);
