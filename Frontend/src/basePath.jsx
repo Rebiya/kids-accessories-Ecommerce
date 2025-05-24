@@ -1,2 +1,2 @@
 // export const basePath = "https://fakestoreapi.com";
-export const basePath = "http://44.202.218.119:3000/api"
+export const basePath = "https://kids-accessories-ecommerce-3.onrender.com/api"

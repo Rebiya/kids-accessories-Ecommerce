@@ -2,7 +2,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 
 // Base API configuration
-const API_BASE_URL = import.meta.env.VITE_REACT_APP_API_BASE_URL || 'http://44.202.218.119:3000/api';
+const API_BASE_URL = import.meta.env.VITE_REACT_APP_API_BASE_URL || 'https://kids-accessories-ecommerce-3.onrender.com/api';
 
 // Configure axios instance
 const api = axios.create({

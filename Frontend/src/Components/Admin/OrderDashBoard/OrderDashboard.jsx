@@ -9,7 +9,7 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import styles from './orderDashboard.module.css';
 
-const API_BASE_URL = 'http://44.202.218.119:3000/api';
+const API_BASE_URL = 'https://kids-accessories-ecommerce-3.onrender.com/api';
 
 const OrderDashboard = () => {
   const [orders, setOrders] = useState([]);
