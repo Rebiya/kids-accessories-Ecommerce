@@ -25,7 +25,7 @@ app.use("/api", router);
 
 const port = process.env.PORT || 3000;
 
-app.listen(port, (err) => {
+app.listen(port, '0.0.0.0',(err) => {
   if (err) console.log(err);
   console.log(`successfully listened on port ${port}`);
 });
