@@ -3,6 +3,7 @@
 This is a full-stack **e-commerce web application** built to support **new mothers** by providing essential baby products, maternal care items, and an **AI-powered parenting assistant**.
 
 🎥 **Video Demo**: [Watch on YouTube](https://youtu.be/Y3R7-EHfLJ8?si=pg7Uf_KqdrJMgWvX)
+
 **Live Demo**: [Live Demo](https://kids-accessories-ecommerce-5.onrender.com/)
 
 ---
